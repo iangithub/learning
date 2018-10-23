@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Blob Sample</h2>
+<h2>@TempData["message"]</h2>
+<hr />
+<form action="@Url.Action("UploadBlob")" method="post" enctype="multipart/form-data">
+    <label for="file">Filename:</label>
+    <input type="file" name="file" id="file" />
+    <input type="submit" value="UploadBlob" />
+</form>
+<li>@Html.ActionLink("List blobs", "ListBlobs", "Blobs")</li>

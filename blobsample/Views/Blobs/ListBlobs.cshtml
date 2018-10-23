@@ -1,0 +1,16 @@
+﻿@model List<blobsample.Controllers.BlobItem>
+@{
+    ViewBag.Title = "List blobs";
+}
+
+<h2>List blobs</h2>
+
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>
+            <a href=@item.Uri>@item.FileName</a>
+            <input type="button" value="Delete" onclick="location.href='@Url.Action("DeleteBlob", "Blobs", new { filename = item.FileName })'" />
+        </li>
+    }
+</ul>
