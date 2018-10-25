@@ -1,0 +1,107 @@
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.Azure.Documents.ServiceInterop.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\DocumentDB.Spatial.Sql.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\ApplicationInsights.config
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\cosmosdb.dll.config
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\cosmosdb.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\cosmosdb.pdb
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Antlr3.Runtime.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.Agent.Intercept.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.DependencyCollector.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.PerfCounterCollector.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.ServerTelemetryChannel.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.Web.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.WindowsServer.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.ApplicationInsights.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.Azure.Documents.Client.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.Web.Infrastructure.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Newtonsoft.Json.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Helpers.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Mvc.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Optimization.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Razor.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.WebPages.Deployment.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.WebPages.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.WebPages.Razor.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\WebGrease.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.Azure.Documents.Client.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Newtonsoft.Json.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Helpers.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Mvc.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Optimization.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.Razor.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.WebPages.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.WebPages.Deployment.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\System.Web.WebPages.Razor.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Antlr3.Runtime.pdb
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.ApplicationInsights.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.DependencyCollector.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.ServerTelemetryChannel.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.WindowsServer.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\Microsoft.AI.Web.xml
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Helpers.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Mvc.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Optimization.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Razor.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.WebPages.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.WebPages.Deployment.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.WebPages.Razor.resources.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\obj\Debug\cosmosdb.csprojResolveAssemblyReference.cache
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\obj\Debug\cosmosdb.csproj.CoreCompileInputs.cache
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\obj\Debug\cosmosdb.dll
+D:\MyDropbox\Dropbox\授課\巨匠\70532\Lesson6 Sample\cosmosdb\cosmosdb\obj\Debug\cosmosdb.pdb
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.Azure.Documents.ServiceInterop.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\DocumentDB.Spatial.Sql.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\ApplicationInsights.config
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\cosmosdb.dll.config
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\cosmosdb.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\cosmosdb.pdb
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Antlr3.Runtime.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.Agent.Intercept.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.DependencyCollector.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.PerfCounterCollector.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.ServerTelemetryChannel.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.Web.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.WindowsServer.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.ApplicationInsights.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.Azure.Documents.Client.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.Web.Infrastructure.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Newtonsoft.Json.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Helpers.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Mvc.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Optimization.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Razor.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.WebPages.Deployment.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.WebPages.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.WebPages.Razor.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\WebGrease.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.Azure.Documents.Client.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Newtonsoft.Json.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Helpers.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Mvc.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Optimization.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.Razor.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.WebPages.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.WebPages.Deployment.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\System.Web.WebPages.Razor.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Antlr3.Runtime.pdb
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.ApplicationInsights.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.DependencyCollector.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.ServerTelemetryChannel.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.WindowsServer.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\Microsoft.AI.Web.xml
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Helpers.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Mvc.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Optimization.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.Razor.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.WebPages.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.WebPages.Deployment.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\bin\zh-Hant\System.Web.WebPages.Razor.resources.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\obj\Debug\cosmosdb.csprojAssemblyReference.cache
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\obj\Debug\cosmosdb.csproj.CoreCompileInputs.cache
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\obj\Debug\cosmosdb.csproj.CopyComplete
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\obj\Debug\cosmosdb.dll
+D:\MY.NET\Teach\70532\cosmosdb\cosmosdb\obj\Debug\cosmosdb.pdb

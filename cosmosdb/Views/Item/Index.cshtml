@@ -1,0 +1,55 @@
+﻿@model IEnumerable<cosmosdb.Models.Item>
+@{
+    ViewBag.Title = "Index";
+}
+<p>
+    @Html.ActionLink("新增待辦事項", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsComplete)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsComplete)
+            </td>
+            <td>
+                @Html.ActionLink("更新已完成", "UpdateItem", new
+                {
+                    Id = item.Id,
+                    Category = item.Category,
+                    Name = item.Name,
+                    Description = item.Description,
+                    IsComplete = item.IsComplete
+                }) |
+                @Html.ActionLink("明細", "Item", new { id = item.Id }) |
+                @Html.ActionLink("刪除", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+</table>
+
