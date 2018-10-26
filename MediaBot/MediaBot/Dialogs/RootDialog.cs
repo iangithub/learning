@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Bot.Builder.Dialogs;
@@ -25,6 +26,9 @@ namespace MediaBot.Dialogs
         {
             var activity = await result as Activity;
 
+            //模擬停頓等待效果
+            Thread.Sleep(5000);
+
             foreach (var item in activity.Attachments)
             {
                 //檔案位置
@@ -37,7 +41,8 @@ namespace MediaBot.Dialogs
 
             }
 
-            await context.PostAsync(JsonConvert.SerializeObject(activity));
+            //await context.PostAsync(JsonConvert.SerializeObject(activity));
+            await context.PostAsync("aaaaa");
 
             context.Wait(MessageReceivedAsync);
         }

@@ -20,6 +20,12 @@ namespace MediaBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
+                //加入回覆打字效果
+                var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                Activity isTypingReply = activity.CreateReply();
+                isTypingReply.Type = ActivityTypes.Typing;
+                await connector.Conversations.ReplyToActivityAsync(isTypingReply);
+
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
             }
             else
