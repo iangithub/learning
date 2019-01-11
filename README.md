@@ -6,4 +6,4 @@
 ### cosmosdb 使用.NET存取Azure CosmosDB
 ### jsonsample 呼叫opendata取得json data
 ### ChatbotDialog 聊天機器人Dialog範例
-### Chatbotbingsearch 聊天機器人+ 範例
+### Chatbotbingsearch 聊天機器人+ bing search 範例
