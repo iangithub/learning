@@ -7,3 +7,5 @@
 ### jsonsample 呼叫opendata取得json data
 ### ChatbotDialog 聊天機器人Dialog範例
 ### Chatbotbingsearch 聊天機器人+ bing search 範例
+### SqlDatabase.zip - ASP.NET + Azure SQL Databae 範例
+### blobsample.zip - Azure Blog Storage 範例
