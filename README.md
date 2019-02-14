@@ -11,4 +11,4 @@
 ### blobsample.zip - Azure Blog Storage 範例
 ### cosmosdb.zip - ASP.NET MVC + Azure Cosmos DB 範例
 ### RedisApp.zip - Azure Redis 範例
-
+### AzureSearch.zip - Azure Search 範例
