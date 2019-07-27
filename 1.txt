@@ -3,3 +3,10 @@
         private static string _endPoint = "https://southeastasia.api.cognitive.microsoft.com";
         private static string _modelname = "Iteration1";
         private static MemoryStream _testImage;
+
+
+
+private static void LoadImagesFromDisk()
+        {
+            _testImage = new MemoryStream(File.ReadAllBytes(Path.Combine("Datas", "test1.jpg")));
+        }
