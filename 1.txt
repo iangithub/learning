@@ -1,0 +1,157 @@
+using Microsoft.ML;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace ImgTransferLearning
+{
+    class Program
+    {
+        //(0) ===== Global Variables =====
+        //資源路徑
+        static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
+        //定型影像資料標記 tsv 檔案的路徑
+        static readonly string _trainTagsTsv = Path.Combine(_assetsPath, "inputs-train"
+            , "data", "tags.tsv");
+        //用來將模型定型之影像的路徑
+        static readonly string _trainImagesFolder = Path.Combine(_assetsPath, "inputs-train", "data");
+        //重複使用以重新對模型進行定型之預先定型 Inception model 的路徑
+        static readonly string _inceptionPb = Path.Combine(_assetsPath, "inputs-train"
+            , "inception", "tensorflow_inception_graph.pb");
+        //用來儲存定型模型的路徑
+        static readonly string _outputImageClassifierZip = Path.Combine(_assetsPath, "outputs"
+            , "imageClassifier.zip");
+        private static string LabelTokey = nameof(LabelTokey);
+        //已預測標籤值的資料行
+        private static string PredictedLabelValue = nameof(PredictedLabelValue);
+
+        static void Main(string[] args)
+        {
+            // (1) Create MLContext to be shared across the model creation workflow objects
+            //     MLContext 類別是所有 ML.NET 作業的起點，且初始化 mlContext 會建立新的 ML.NET 環境
+            MLContext mlContext = new MLContext();
+
+            // (2) Reuse And Tune InceptionModel
+            var model = ReuseAndTuneInceptionModel(mlContext, _trainTagsTsv, _trainImagesFolder
+                , _inceptionPb, _outputImageClassifierZip);
+
+        }
+
+        /// <summary>
+        /// 建立預設參數的結構
+        /// </summary>
+        private struct InceptionSettings
+        {
+            public const int ImageHeight = 224;
+            public const int ImageWidth = 224;
+            public const float Mean = 117; //平均值
+            public const float Scale = 1;
+            public const bool ChannelsLast = true;
+        }
+
+        /// <summary>
+        /// 載入資料 / 擷取並轉換資料 / TensorFlow 模型評分/ 調整(重新定型) 模型 / 顯示模型結果。
+        /// 評估模型 / 傳回模型
+        /// </summary>
+        /// <param name="mlContext"></param>
+        /// <param name="dataLocation"></param>
+        /// <param name="imagesFolder"></param>
+        /// <param name="inputModelLocation"></param>
+        /// <param name="outputModelLocation"></param>
+        /// <returns></returns>
+        public static ITransformer ReuseAndTuneInceptionModel(MLContext mlContext, string dataLocation
+            , string imagesFolder, string inputModelLocation, string outputModelLocation)
+        {
+            // (1) 載入資料
+            var data = mlContext.Data.LoadFromTextFile<ImageData>(path: dataLocation, hasHeader: false);
+
+            // (2) 擷取並轉換資料
+            /*
+                Transforms.Conversion.MapValueToKey:擷取 Features 並傳輸資料，將影像調整為數值向量格式
+                LoadImages:處理影像，以點陣圖類型的形式載入記憶體
+                ResizeImages:調整影像大小，因為預先定型的模組具有定義的輸入影像寬度和高度
+                ExtractPixels:從輸入影像擷取像素，並轉換成數值向量。
+                LoadTensorFlowModel：載入 TensorFlow 模型
+                ScoreTensorFlowModel:將 TensorFlowTransform 附加至 estimator，
+                                    擷取指定的輸出 (Inception model 的影像特徵 softmax2_pre_activation)
+                                    ，並使用預先定型的 TensorFlow 模型為資料集評分
+             */
+            var estimator = mlContext
+                            .Transforms.Conversion.MapValueToKey(outputColumnName: LabelTokey
+                                                                , inputColumnName: "Label")
+                            .Append(mlContext.Transforms.LoadImages(outputColumnName: "input"
+                                                                , imageFolder: _trainImagesFolder
+                                                                , inputColumnName: nameof(ImageData.ImagePath)))
+                            .Append(mlContext.Transforms.ResizeImages(outputColumnName: "input"
+                                                                , imageWidth: InceptionSettings.ImageWidth
+                                                                , imageHeight: InceptionSettings.ImageHeight
+                                                                , inputColumnName: "input"))
+                            .Append(mlContext.Transforms.ExtractPixels(outputColumnName: "input"
+                                                                , interleavePixelColors: InceptionSettings.ChannelsLast
+                                                                , offsetImage: InceptionSettings.Mean))
+                            .Append(mlContext.Model.LoadTensorFlowModel(inputModelLocation)
+                            .ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }
+                                                , inputColumnNames: new[] { "input" }
+                                                , addBatchDimensionInput: true))
+                            .Append(mlContext.MulticlassClassification.Trainers.LbfgsMaximumEntropy(
+                                    labelColumnName: LabelTokey
+                                    , featureColumnName: "softmax2_pre_activation")
+                            )
+                            .Append(mlContext.Transforms.Conversion.MapKeyToValue(PredictedLabelValue, "PredictedLabel"))
+                            .AppendCacheCheckpoint(mlContext);
+
+            // (3) Training classification model　轉換資料集及套用定型，來定型模型
+            Console.WriteLine("=============== Training classification model ===============");
+            ITransformer model = estimator.Fit(data);
+
+            // (4)　對測試資料集之多個提供的輸入資料列進行預測
+            var predictions = model.Transform(data);
+
+            // (5)　 轉換為強型別的 IEnumerables
+            var imageData = mlContext.Data.CreateEnumerable<ImageData>(data, false, true);
+            var imagePredictionData = mlContext.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
+
+            //(6) 顯示資料和預測
+            DisplayResults(imagePredictionData);
+
+
+            // (7) 顯示模型評估結果
+            Console.WriteLine("=============== Classification metrics ===============");
+
+            var multiclassContext = mlContext.MulticlassClassification;
+            var metrics = multiclassContext.Evaluate(predictions, labelColumnName: LabelTokey, predictedLabelColumnName: "PredictedLabel");
+
+
+            Console.WriteLine($"LogLoss is: {metrics.LogLoss}");
+            Console.WriteLine($"PerClassLogLoss is: {String.Join(" , ", metrics.PerClassLogLoss.Select(c => c.ToString()))}");
+
+            mlContext.Model.Save(model, data.Schema, _outputImageClassifierZip);
+            return model;
+        }
+
+        private static void DisplayResults(IEnumerable<ImagePrediction> imagePredictionData)
+        {
+            foreach (ImagePrediction prediction in imagePredictionData)
+            {
+                Console.WriteLine($"Image: {Path.GetFileName(prediction.ImagePath)} predicted as: {prediction.PredictedLabelValue} with score: {prediction.Score.Max()} ");
+            }
+        }
+
+        /// <summary>
+        /// 讀取影像資料 tags.tsv 檔案
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        public static IEnumerable<ImageData> ReadFromTsv(string file, string folder)
+        {
+            return File.ReadAllLines(file)
+             .Select(line => line.Split('\t'))
+             .Select(line => new ImageData()
+             {
+                 ImagePath = Path.Combine(folder, line[0])
+             });
+        }
+    }
+}
