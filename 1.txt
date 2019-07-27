@@ -1,9 +1,6 @@
- //資源路徑
-        static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
-        //預測影像資料標記 tsv 檔案的路徑
-        static readonly string _predictImageListTsv = Path.Combine(_assetsPath, "inputs-predict", "data", "image_list.tsv");
-        //已定型模型分類之影像的路徑
-        static readonly string _predictImagesFolder = Path.Combine(_assetsPath, "inputs-predict", "data");
-        static readonly string _predictSingleImage = Path.Combine(_assetsPath, "inputs-predict-single", "data", "toaster3.jpg");
-        //用來載入已定型模型的路徑
-        static readonly string _inputImageClassifierZip = Path.Combine(Environment.CurrentDirectory, "imageClassifier.zip");
+  MLContext mlContext = new MLContext();
+            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
+            ITransformer trainedModel = mlContext.Model.Load(_inputImageClassifierZip, out modelSchema);
+
+            ClassifyImages(mlContext, _predictImageListTsv, _predictImagesFolder, _inputImageClassifierZip
+                , trainedModel);
