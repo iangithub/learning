@@ -1,4 +1,34 @@
- public static void ClassifyImages(MLContext mlContext, string dataLocation, string imagesFolder, string outputModelLocation, ITransformer model)
+using Microsoft.ML;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace ImgTransferLearningAPP
+{
+    class Program
+    {
+        //資源路徑
+        static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
+        //預測影像資料標記 tsv 檔案的路徑
+        static readonly string _predictImageListTsv = Path.Combine(_assetsPath, "inputs-predict", "data", "image_list.tsv");
+        //已定型模型分類之影像的路徑
+        static readonly string _predictImagesFolder = Path.Combine(_assetsPath, "inputs-predict", "data");
+        static readonly string _predictSingleImage = Path.Combine(_assetsPath, "inputs-predict-single", "data", "toaster3.jpg");
+        //用來載入已定型模型的路徑
+        static readonly string _inputImageClassifierZip = Path.Combine(Environment.CurrentDirectory, "imageClassifier.zip");
+
+        static void Main(string[] args)
+        {
+            MLContext mlContext = new MLContext();
+            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
+            ITransformer trainedModel = mlContext.Model.Load(_inputImageClassifierZip, out modelSchema);
+
+            ClassifyImages(mlContext, _predictImageListTsv, _predictImagesFolder, _inputImageClassifierZip
+                , trainedModel);
+        }
+
+        public static void ClassifyImages(MLContext mlContext, string dataLocation, string imagesFolder, string outputModelLocation, ITransformer model)
         {
 
             // Read the image_list.tsv file and add the filepath to the image file name 
@@ -37,3 +67,5 @@
                  ImagePath = Path.Combine(folder, line[0])
              });
         }
+    }
+}
