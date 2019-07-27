@@ -1,58 +1,24 @@
- 
- private struct InceptionSettings
-        {
-            public const int ImageHeight = 224;
-            public const int ImageWidth = 224;
-            public const float Mean = 117; 
-            public const float Scale = 1;
-            public const bool ChannelsLast = true;
-        }
-        
-        
- public static void TrainAndSaveModel()
+ static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
+        static readonly string _outputfaceageZip = Path.Combine(_assetsPath, "faceage.zip");
+        static readonly string _testDataFolder = Path.Combine(_assetsPath, "TestImgs");
+
+        static void Main(string[] args)
         {
             MLContext mlContext = new MLContext();
 
-            // STEP 1: Data
-            var fulldata = mlContext.Data.LoadFromTextFile<ImageData>(path: _trainTagsPath
-                , separatorChar: ',', hasHeader: false);
-            var trainTestData = mlContext.Data.TrainTestSplit(fulldata, testFraction: 0.2);
-            var trainData = trainTestData.TrainSet;
-            var testData = trainTestData.TestSet;
+            // Load the model
+            ITransformer loadedModel = mlContext.Model.Load(_outputfaceageZip, out var modelInputSchema);
 
-            // STEP 2：set train pipeline
-            var pipeline = mlContext.Transforms.LoadImages(outputColumnName: "input"
-                                                        , imageFolder: _trainDataPath
-                                                        , inputColumnName: nameof(ImageData.ImagePath))
-                .Append(mlContext.Transforms.ResizeImages(outputColumnName: "input"
-                                                        , imageWidth: InceptionSettings.ImageWidth
-                                                        , imageHeight: InceptionSettings.ImageHeight
-                                                        , inputColumnName: "input"))
-                .Append(mlContext.Transforms.ExtractPixels(outputColumnName: "input"
-                                                        , interleavePixelColors: InceptionSettings.ChannelsLast
-                                                        , offsetImage: InceptionSettings.Mean))
-                .Append(mlContext.Model.LoadTensorFlowModel(inceptionPb).
-                     ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }
-                                            , inputColumnNames: new[] { "input" }
-                                            , addBatchDimensionInput: true))
-                .Append(mlContext.Regression.Trainers.LbfgsPoissonRegression(
-                                                    labelColumnName: "Label"
-                                                    , featureColumnName: "softmax2_pre_activation"));
+            // Make prediction function (input = ImageNetData, output = ImageNetPrediction)
+            var predictor = mlContext.Model.CreatePredictionEngine<ImageData, ImagePrediction>(loadedModel);
 
+            DirectoryInfo testdir = new DirectoryInfo(_testDataFolder);
+            foreach (var faceimg in testdir.GetFiles("*.jpg"))
+            {
+                ImageData image = new ImageData();
+                image.ImagePath = faceimg.FullName;
+                var pred = predictor.Predict(image);
 
-            // STEP 3：train model       
-            ITransformer model = pipeline.Fit(trainData);
-
-            // STEP 4：Evaluate model          
-            var predictions = model.Transform(testData);
-            var metrics = mlContext.Regression.Evaluate(predictions
-                                                        , labelColumnName: "Label"
-                                                        , scoreColumnName: "Score");
-
-            Console.WriteLine($"RSquared: {metrics.RSquared}");
-
-            //STEP 5：Save model
-            Console.WriteLine("====== Save model to local file =========");
-            mlContext.Model.Save(model, trainData.Schema, _outputfaceageZip);
+                Console.WriteLine($"Filename:{faceimg.Name}:\tPredict Result:{pred.FaceValue}");
+            }
         }
-        
