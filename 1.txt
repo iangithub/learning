@@ -1,6 +1,39 @@
-  MLContext mlContext = new MLContext();
-            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
-            ITransformer trainedModel = mlContext.Model.Load(_inputImageClassifierZip, out modelSchema);
+ public static void ClassifyImages(MLContext mlContext, string dataLocation, string imagesFolder, string outputModelLocation, ITransformer model)
+        {
 
-            ClassifyImages(mlContext, _predictImageListTsv, _predictImagesFolder, _inputImageClassifierZip
-                , trainedModel);
+            // Read the image_list.tsv file and add the filepath to the image file name 
+            // before loading into ImageData 
+            var imageData = ReadFromTsv(dataLocation, imagesFolder);
+            var imageDataView = mlContext.Data.LoadFromEnumerable<ImageData>(imageData);
+
+            var predictions = model.Transform(imageDataView);
+            var imagePredictionData = mlContext.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
+
+            Console.WriteLine("=============== Making classifications ===============");
+
+            DisplayResults(imagePredictionData);
+        }
+
+        private static void DisplayResults(IEnumerable<ImagePrediction> imagePredictionData)
+        {
+            foreach (ImagePrediction prediction in imagePredictionData)
+            {
+                Console.WriteLine($"Image: {Path.GetFileName(prediction.ImagePath)} predicted as: {prediction.PredictedLabelValue} with score: {prediction.Score.Max()} ");
+            }
+        }
+
+        /// <summary>
+        /// 讀取影像資料 tags.tsv 檔案
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        public static IEnumerable<ImageData> ReadFromTsv(string file, string folder)
+        {
+            return File.ReadAllLines(file)
+             .Select(line => line.Split('\t'))
+             .Select(line => new ImageData()
+             {
+                 ImagePath = Path.Combine(folder, line[0])
+             });
+        }
