@@ -1,24 +1,5 @@
- static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
-        static readonly string _outputfaceageZip = Path.Combine(_assetsPath, "faceage.zip");
-        static readonly string _testDataFolder = Path.Combine(_assetsPath, "TestImgs");
-
-        static void Main(string[] args)
-        {
-            MLContext mlContext = new MLContext();
-
-            // Load the model
-            ITransformer loadedModel = mlContext.Model.Load(_outputfaceageZip, out var modelInputSchema);
-
-            // Make prediction function (input = ImageNetData, output = ImageNetPrediction)
-            var predictor = mlContext.Model.CreatePredictionEngine<ImageData, ImagePrediction>(loadedModel);
-
-            DirectoryInfo testdir = new DirectoryInfo(_testDataFolder);
-            foreach (var faceimg in testdir.GetFiles("*.jpg"))
-            {
-                ImageData image = new ImageData();
-                image.ImagePath = faceimg.FullName;
-                var pred = predictor.Predict(image);
-
-                Console.WriteLine($"Filename:{faceimg.Name}:\tPredict Result:{pred.FaceValue}");
-            }
-        }
+ private static Guid _projectId = Guid.Parse("840078d2-8b7c-4584-aabe-aae07a9c344f");
+        private static string _apiKey = "8fed904e5ad4490d87f435b2a784d318";
+        private static string _endPoint = "https://southeastasia.api.cognitive.microsoft.com";
+        private static string _modelname = "Iteration1";
+        private static MemoryStream _testImage;
