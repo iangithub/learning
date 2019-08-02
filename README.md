@@ -12,3 +12,5 @@
 ### cosmosdb.zip - ASP.NET MVC + Azure Cosmos DB 範例
 ### RedisApp.zip - Azure Redis 範例
 ### AzureSearch.zip - Azure Search 範例
+### ML 範例 - 年齡預測 https://1drv.ms/u/s!AjffVcQyWCmundBdKIsJeUxofBosIw?e=UOhbNb
+### ML 範例 - Image分類預測 https://1drv.ms/u/s!AjffVcQyWCmundBe4Lybx8J_FeoB0w?e=RtHUUd
