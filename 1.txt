@@ -1,5 +1,4 @@
-namespace MyLib
-{
+
     public class FaceResult
     {
         public Face[] Property1 { get; set; }
@@ -307,4 +306,3 @@ namespace MyLib
         public float x { get; set; }
         public float y { get; set; }
     }
-}
