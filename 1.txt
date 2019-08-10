@@ -1,8 +1,2 @@
-if (luisresult.TopScoringIntent.Intent == "匯率查詢")
-                {
-                    replystr = await FeedbackCurrencyRate((string)dynaobj.values[0]);
-                }
-                else
-                {
-                    replystr = "目前無法提供服務";
-                }
+ reply.Send(eventobj.Events[0].ReplyToken
+                    , new TextMessageObj() { Text = replystr });
