@@ -1,3 +1,8 @@
- var luisresult = await GetPrediction(eventobj.Events[0].Message.Text);
-                JObject jobj = JObject.Parse(luisresult.Entities[0].AdditionalProperties["resolution"].ToString());
-                dynamic dynaobj = jobj as dynamic;
+if (luisresult.TopScoringIntent.Intent == "匯率查詢")
+                {
+                    replystr = await FeedbackCurrencyRate((string)dynaobj.values[0]);
+                }
+                else
+                {
+                    replystr = "目前無法提供服務";
+                }
