@@ -1,24 +1,35 @@
-//找出幣別匯率
-        private static async Task FindCurrencyRate()
+   //下載匯率資訊
+        private static async Task DownloadCurrency()
         {
-            //記憶體沒有任何匯率資訊
-            if (_currencyInfo.Rates == null)
+            var line = string.Empty;
+            _currencyInfo.Rates = new System.Collections.Generic.List<CurrencyRate>();
+
+            using (var client = new HttpClient())
             {
-                await DownloadCurrency();
-                _currencyInfo.LastTime = DateTime.Now;
-            }
-            else
-            {
-                //記憶體暫存的匯率資訊超過1小時，重新更新
-                if (_currencyInfo.LastTime.Hour < DateTime.Now.Hour || _currencyInfo.LastTime.Date < DateTime.Now.Date)
+                using (var response = await client.GetAsync("https://rate.bot.com.tw/xrt/flcsv/0/day"))
                 {
-                    if (_currencyInfo.Rates != null)
+                    using (Stream st = await response.Content.ReadAsStreamAsync())
                     {
-                        _currencyInfo.Rates.Clear();
+                        using (var streader = new StreamReader(st))
+                        {
+                            var i = 0;
+                            while ((line = streader.ReadLine()) != null)
+                            {
+                                string[] split = line.Split(',');
+                                if (i > 0)
+                                {
+                                    var item = new CurrencyRate();
+                                    item.CurrencyType = split[0];
+                                    item.BuyCash = decimal.Parse(split[2]);
+                                    item.BuySpot = decimal.Parse(split[3]);
+                                    item.SellCash = decimal.Parse(split[12]);
+                                    item.SellSpot = decimal.Parse(split[13]);
+                                    _currencyInfo.Rates.Add(item);
+                                }
+                                i++;
+                            }
+                        }
                     }
-                    await DownloadCurrency();
-                    _currencyInfo.LastTime = DateTime.Now;
                 }
             }
         }
-
