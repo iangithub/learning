@@ -1,35 +1,25 @@
-   //下載匯率資訊
-        private static async Task DownloadCurrency()
-        {
-            var line = string.Empty;
-            _currencyInfo.Rates = new System.Collections.Generic.List<CurrencyRate>();
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
-            using (var client = new HttpClient())
-            {
-                using (var response = await client.GetAsync("https://rate.bot.com.tw/xrt/flcsv/0/day"))
-                {
-                    using (Stream st = await response.Content.ReadAsStreamAsync())
-                    {
-                        using (var streader = new StreamReader(st))
-                        {
-                            var i = 0;
-                            while ((line = streader.ReadLine()) != null)
-                            {
-                                string[] split = line.Split(',');
-                                if (i > 0)
-                                {
-                                    var item = new CurrencyRate();
-                                    item.CurrencyType = split[0];
-                                    item.BuyCash = decimal.Parse(split[2]);
-                                    item.BuySpot = decimal.Parse(split[3]);
-                                    item.SellCash = decimal.Parse(split[12]);
-                                    item.SellSpot = decimal.Parse(split[13]);
-                                    _currencyInfo.Rates.Add(item);
-                                }
-                                i++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+namespace MyLineBotStudy.Models
+{
+    public class CurrencyInfo
+    {
+        /// <summary>
+        /// 資料更新間
+        /// </summary>
+        public DateTime LastTime { get; set; }
+        public List<CurrencyRate> Rates { get; set; }
+    }
+
+    public class CurrencyRate
+    {
+        public String CurrencyType { get; set; }
+        public decimal BuyCash { get; set; }
+        public decimal BuySpot { get; set; }
+        public decimal SellCash { get; set; }
+        public decimal SellSpot { get; set; }
+    }
+}
