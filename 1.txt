@@ -1,2 +1,26 @@
- reply.Send(eventobj.Events[0].ReplyToken
-                    , new TextMessageObj() { Text = replystr });
+private static async Task<string> FeedbackCurrencyRate(string currency)
+        {
+
+            string result = @"您詢問的幣別{0}目前匯率
+現鈔買入{1}，賣出 {2}
+即期買入{3}，賣出{4}
+以上匯率來自台銀公告匯率資訊僅供參考，請以實際承作匯率為主。 ";
+
+            //找出幣別匯率
+            await FindCurrencyRate();
+
+            if (_currencyInfo != null)
+            {
+                var item = _currencyInfo.Rates.Find(x => x.CurrencyType == currency);
+                if (item != null)
+                {
+                    result = string.Format(result, currency, item.BuyCash, item.SellCash, item.BuySpot, item.SellSpot);
+                }
+                else
+                {
+                    result = "無法提供這個幣別的資訊";
+                }
+            }
+
+            return result;
+        }
