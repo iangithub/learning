@@ -1,5 +1,10 @@
-var luiskey = "7b25c16fde734fcfb6b9650cd4a5b01b";
-            var credentials = new ApiKeyServiceClientCredentials(luiskey);
-            var luisclient = new LUISRuntimeClient(credentials
-                , new System.Net.Http.DelegatingHandler[] { });
-            luisclient.Endpoint = "https://westus.api.cognitive.microsoft.com";
+ // LUIS APP ID
+            var luisappid = "fea8561f-9266-4a48-97a5-6c5274618363";
+
+            // common settings for remaining parameters
+            Double? timezoneoffset = null;
+            var verbose = true;
+            var staging = false;
+            var spellCheck = false;
+            String bingspellcheckkey = null;
+            var log = false;
