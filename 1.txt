@@ -1,26 +1,24 @@
-private static async Task<string> FeedbackCurrencyRate(string currency)
+//找出幣別匯率
+        private static async Task FindCurrencyRate()
         {
-
-            string result = @"您詢問的幣別{0}目前匯率
-現鈔買入{1}，賣出 {2}
-即期買入{3}，賣出{4}
-以上匯率來自台銀公告匯率資訊僅供參考，請以實際承作匯率為主。 ";
-
-            //找出幣別匯率
-            await FindCurrencyRate();
-
-            if (_currencyInfo != null)
+            //記憶體沒有任何匯率資訊
+            if (_currencyInfo.Rates == null)
             {
-                var item = _currencyInfo.Rates.Find(x => x.CurrencyType == currency);
-                if (item != null)
+                await DownloadCurrency();
+                _currencyInfo.LastTime = DateTime.Now;
+            }
+            else
+            {
+                //記憶體暫存的匯率資訊超過1小時，重新更新
+                if (_currencyInfo.LastTime.Hour < DateTime.Now.Hour || _currencyInfo.LastTime.Date < DateTime.Now.Date)
                 {
-                    result = string.Format(result, currency, item.BuyCash, item.SellCash, item.BuySpot, item.SellSpot);
-                }
-                else
-                {
-                    result = "無法提供這個幣別的資訊";
+                    if (_currencyInfo.Rates != null)
+                    {
+                        _currencyInfo.Rates.Clear();
+                    }
+                    await DownloadCurrency();
+                    _currencyInfo.LastTime = DateTime.Now;
                 }
             }
-
-            return result;
         }
+
