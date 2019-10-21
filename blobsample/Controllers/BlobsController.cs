@@ -46,12 +46,6 @@ namespace blobsample.Controllers
             {
                 CloudBlockBlob blob = (CloudBlockBlob)item;
 
-                var readPolicy = new SharedAccessBlobPolicy()
-                {
-                    Permissions = SharedAccessBlobPermissions.Read,
-                    SharedAccessExpiryTime = DateTime.UtcNow + TimeSpan.FromMinutes(5)
-                };
-
                 var sasConstraints = new SharedAccessBlobPolicy();
                 sasConstraints.SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-5);
                 sasConstraints.SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(10);
@@ -59,7 +53,7 @@ namespace blobsample.Controllers
 
                 var sasBlobToken = blob.GetSharedAccessSignature(sasConstraints);
 
-                var newUri = new Uri(blob.Uri.AbsoluteUri + blob.GetSharedAccessSignature(readPolicy));
+                var newUri = new Uri(blob.Uri.AbsoluteUri + sasBlobToken);
 
                 blobs.Add(new BlobItem()
                 {
