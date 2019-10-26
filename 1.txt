@@ -1,9 +1,9 @@
-const string imgfile = "img/10.jpg";
-            Guid projectid = new Guid("b42d0e7b-3c31-4de9-9c82-f8476b17b1c0");
-
-
-            CustomVisionPredictionClient endpoint = new CustomVisionPredictionClient()
+using (var stream = File.OpenRead(imgfile))
             {
-                ApiKey = "e1217f7a7dba4911930a1c74ce5bbd71",
-                Endpoint = "https://japaneast.api.cognitive.microsoft.com/"
-            };
+                var result = endpoint.DetectImage(projectid, "Iteration 1", stream);
+
+                foreach (var c in result.Predictions)
+                {
+                    Console.WriteLine($"\t{c.TagName}: {c.Probability:P1} [ {c.BoundingBox.Left}, {c.BoundingBox.Top}, {c.BoundingBox.Width}, {c.BoundingBox.Height} ]");
+                }
+            }
