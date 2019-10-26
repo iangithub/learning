@@ -1,22 +1,9 @@
-Console.WriteLine("=============== Start of process ===============");
-            Console.WriteLine();
+// (1) ===== Create MLContext ==========
+            MLContext mlContent = new MLContext();
 
-            // Create ML.NET context/local environment - allows you to add steps in order to keep everything together 
-            // as you discover the ML.NET trainers and transforms 
-            // (1) ===== <Create MLContext> ==========
-            MLContext mlContext = new MLContext();
+            // (2) ===== Load trained model ==========
+            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
+            ITransformer trainedModel = mlContent.Model.Load("model.zip", out modelSchema);
 
-            // (2) ======= <LoadData> =========
-            TrainTestData splitDataView = LoadData(mlContext);
-
-            // (3) ======= <Build And Train Model> ===========
-            ITransformer model = BuildAndTrainModel(mlContext, splitDataView.TrainSet);
-
-            // (4) ======== <Evaluate Model> ============
-            Evaluate(mlContext, model, splitDataView.TestSet);
-
-            // (5) ======== <Save Model> ============
-            mlContext.Model.Save(model, splitDataView.TrainSet.Schema, "model.zip");
-
-            Console.WriteLine();
-            Console.WriteLine("=============== End of process ===============");
+            // (3) ===== Single Item ==========
+            UseModelWithSingleItem(mlContent, trainedModel);
