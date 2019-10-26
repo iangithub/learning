@@ -1,9 +1,7 @@
-using (var stream = File.OpenRead(imgfile))
-            {
-                var result = endpoint.DetectImage(projectid, "Iteration 1", stream);
-
-                foreach (var c in result.Predictions)
-                {
-                    Console.WriteLine($"\t{c.TagName}: {c.Probability:P1} [ {c.BoundingBox.Left}, {c.BoundingBox.Top}, {c.BoundingBox.Width}, {c.BoundingBox.Height} ]");
-                }
-            }
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
