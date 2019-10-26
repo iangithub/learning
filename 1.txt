@@ -1,15 +1,25 @@
-public static TrainTestData LoadData(MLContext mlContext)
+public static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView splitTrainSet)
         {
-            //ML.NET also allows you to load data from databases or in-memory collections.
-            IDataView dataView = mlContext.Data.LoadFromTextFile<SentimentData>(_dataPath, hasHeader: false);
+            //(1) FeaturizeText and append the machine learning task
+            // Create a flexible pipeline (composed by a chain of estimators) for creating/training the model.
+            // This is used to format and clean the data.  
+            // Convert the text column to numeric vectors (Features column) 
+            // Text.FeaturizeText -> FeaturizeText
+            // Append BinaryClassification.Trainers -> AddTrainer
+            // <SnippetFeaturizeText>
+            var estimator = mlContext
+                .Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentData.SentimentText))
+                .Append(mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label"
+                                                                                        , featureColumnName: "Features"));
 
-            /* 
-             * You need both a training dataset to train the model and a test dataset to evaluate the model.
-             * Split the loaded dataset into train and test datasets
-             * Specify test dataset percentage with the `testFraction`parameter
-            */
-            // <SplitData>
-            TrainTestData splitDataView = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
+            // (2) Create and train the model based on the dataset that has been loaded, transformed.
+            //<SnippetTrainModel>
+            Console.WriteLine("=============== Create and Train the Model ===============");
+            var model = estimator.Fit(splitTrainSet);
+            Console.WriteLine("=============== End of training ===============");
+            Console.WriteLine();
 
-            return splitDataView;
+            // (3) Returns the model we trained to use for evaluation.
+            // <SnippetReturnModel>
+            return model;
         }
