@@ -1,1 +1,15 @@
-static readonly string _dataPath = Path.Combine(Environment.CurrentDirectory, "Data", "yelp_labelled.txt");
+public static TrainTestData LoadData(MLContext mlContext)
+        {
+            //ML.NET also allows you to load data from databases or in-memory collections.
+            IDataView dataView = mlContext.Data.LoadFromTextFile<SentimentData>(_dataPath, hasHeader: false);
+
+            /* 
+             * You need both a training dataset to train the model and a test dataset to evaluate the model.
+             * Split the loaded dataset into train and test datasets
+             * Specify test dataset percentage with the `testFraction`parameter
+            */
+            // <SplitData>
+            TrainTestData splitDataView = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
+
+            return splitDataView;
+        }
