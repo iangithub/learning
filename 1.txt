@@ -1,12 +1,7 @@
-public static void PrintRegressionMetrics(string name, RegressionMetrics metrics)
-        {
-            Console.WriteLine($"*************************************************");
-            Console.WriteLine($"*       Metrics for {name} regression model      ");
-            Console.WriteLine($"*------------------------------------------------");
-            Console.WriteLine($"*       LossFn:        {metrics.LossFunction:0.##}");
-            Console.WriteLine($"*       R2 Score:      {metrics.RSquared:0.##}");
-            Console.WriteLine($"*       Absolute loss: {metrics.MeanAbsoluteError:#.##}");
-            Console.WriteLine($"*       Squared loss:  {metrics.MeanSquaredError:#.##}");
-            Console.WriteLine($"*       RMS loss:      {metrics.RootMeanSquaredError:#.##}");
-            Console.WriteLine($"*************************************************");
-        }
+ MLContext mlContext = new MLContext(seed: 0);
+
+            // Create, Train, Evaluate and Save a model
+            BuildTrainEvaluateAndSaveModel(mlContext);
+
+            Console.WriteLine("Press any key to exit..");
+            Console.ReadLine();
