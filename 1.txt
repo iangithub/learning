@@ -1,7 +1,9 @@
-// (1) Create MLContext to be shared across the model creation workflow objects
-            //     MLContext 類別是所有 ML.NET 作業的起點，且初始化 mlContext 會建立新的 ML.NET 環境
-            MLContext mlContext = new MLContext();
-
-            // (2) Reuse And Tune InceptionModel
-            var model = ReuseAndTuneInceptionModel(mlContext, _trainTagsTsv, _trainImagesFolder
-                , _inceptionPb, _outputImageClassifierZip);
+//資源路徑
+        static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
+        //預測影像資料標記 tsv 檔案的路徑
+        static readonly string _predictImageListTsv = Path.Combine(_assetsPath, "inputs-predict", "data", "image_list.tsv");
+        //已定型模型分類之影像的路徑
+        static readonly string _predictImagesFolder = Path.Combine(_assetsPath, "inputs-predict", "data");
+        static readonly string _predictSingleImage = Path.Combine(_assetsPath, "inputs-predict-single", "data", "toaster3.jpg");
+        //用來載入已定型模型的路徑
+        static readonly string _inputImageClassifierZip = Path.Combine(Environment.CurrentDirectory, "imageClassifier.zip");
