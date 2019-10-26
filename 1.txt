@@ -1,15 +1,6 @@
- /// <summary>
-        /// 讀取影像資料 tags.tsv 檔案
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="folder"></param>
-        /// <returns></returns>
-        public static IEnumerable<ImageData> ReadFromTsv(string file, string folder)
-        {
-            return File.ReadAllLines(file)
-             .Select(line => line.Split('\t'))
-             .Select(line => new ImageData()
-             {
-                 ImagePath = Path.Combine(folder, line[0])
-             });
-        }
+ MLContext mlContext = new MLContext();
+            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
+            ITransformer trainedModel = mlContext.Model.Load(_inputImageClassifierZip, out modelSchema);
+
+            ClassifyImages(mlContext, _predictImageListTsv, _predictImagesFolder, _inputImageClassifierZip
+                , trainedModel);
