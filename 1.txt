@@ -1,15 +1,7 @@
-public static void ClassifyImages(MLContext mlContext, string dataLocation, string imagesFolder, string outputModelLocation, ITransformer model)
+ private static void DisplayResults(IEnumerable<ImagePrediction> imagePredictionData)
         {
-
-            // Read the image_list.tsv file and add the filepath to the image file name 
-            // before loading into ImageData 
-            var imageData = ReadFromTsv(dataLocation, imagesFolder);
-            var imageDataView = mlContext.Data.LoadFromEnumerable<ImageData>(imageData);
-
-            var predictions = model.Transform(imageDataView);
-            var imagePredictionData = mlContext.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
-
-            Console.WriteLine("=============== Making classifications ===============");
-
-            DisplayResults(imagePredictionData);
+            foreach (ImagePrediction prediction in imagePredictionData)
+            {
+                Console.WriteLine($"Image: {Path.GetFileName(prediction.ImagePath)} predicted as: {prediction.PredictedLabelValue} with score: {prediction.Score.Max()} ");
+            }
         }
