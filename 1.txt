@@ -1,29 +1,22 @@
- public static void Evaluate(MLContext mlContext, ITransformer model, IDataView splitTestSet)
-        {
-            Console.WriteLine("=============== Evaluating Model accuracy with Test data===============");
-            IDataView predictions = model.Transform(splitTestSet);
-
-            // BinaryClassificationContext.Evaluate returns a BinaryClassificationEvaluator.CalibratedResult
-            // that contains the computed overall metrics.
-            // <SnippetEvaluate>
-            CalibratedBinaryClassificationMetrics metrics = mlContext.BinaryClassification.Evaluate(predictions, "Label");
-
-            // The Accuracy metric gets the accuracy of a model, which is the proportion 
-            // of correct predictions in the test set.
-            // The AreaUnderROCCurve metric is equal to the probability that the algorithm ranks
-            // a randomly chosen positive instance higher than a randomly chosen negative one
-            // (assuming 'positive' ranks higher than 'negative').
-            // The F1Score metric gets the model's F1 score.
-            // The F1 score is the harmonic mean of precision and recall:
-            //  2 * precision * recall / (precision + recall).
-            // <SnippetDisplayMetrics>
+Console.WriteLine("=============== Start of process ===============");
             Console.WriteLine();
-            Console.WriteLine("Model quality metrics evaluation");
-            Console.WriteLine("--------------------------------");
-            Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
-            Console.WriteLine($"Auc: {metrics.AreaUnderRocCurve:P2}");
-            Console.WriteLine($"F1Score: {metrics.F1Score:P2}");
-            Console.WriteLine("=============== End of model evaluation ===============");
-            //</SnippetDisplayMetrics>
 
-        }
+            // Create ML.NET context/local environment - allows you to add steps in order to keep everything together 
+            // as you discover the ML.NET trainers and transforms 
+            // (1) ===== <Create MLContext> ==========
+            MLContext mlContext = new MLContext();
+
+            // (2) ======= <LoadData> =========
+            TrainTestData splitDataView = LoadData(mlContext);
+
+            // (3) ======= <Build And Train Model> ===========
+            ITransformer model = BuildAndTrainModel(mlContext, splitDataView.TrainSet);
+
+            // (4) ======== <Evaluate Model> ============
+            Evaluate(mlContext, model, splitDataView.TestSet);
+
+            // (5) ======== <Save Model> ============
+            mlContext.Model.Save(model, splitDataView.TrainSet.Schema, "model.zip");
+
+            Console.WriteLine();
+            Console.WriteLine("=============== End of process ===============");
