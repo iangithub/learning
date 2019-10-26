@@ -1,15 +1,7 @@
- /// <summary>
-        /// 讀取影像資料 tags.tsv 檔案
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="folder"></param>
-        /// <returns></returns>
-        public static IEnumerable<ImageData> ReadFromTsv(string file, string folder)
-        {
-            return File.ReadAllLines(file)
-             .Select(line => line.Split('\t'))
-             .Select(line => new ImageData()
-             {
-                 ImagePath = Path.Combine(folder, line[0])
-             });
-        }
+// (1) Create MLContext to be shared across the model creation workflow objects
+            //     MLContext 類別是所有 ML.NET 作業的起點，且初始化 mlContext 會建立新的 ML.NET 環境
+            MLContext mlContext = new MLContext();
+
+            // (2) Reuse And Tune InceptionModel
+            var model = ReuseAndTuneInceptionModel(mlContext, _trainTagsTsv, _trainImagesFolder
+                , _inceptionPb, _outputImageClassifierZip);
