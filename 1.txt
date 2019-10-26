@@ -1,9 +1,36 @@
-// (1) ===== Create MLContext ==========
-            MLContext mlContent = new MLContext();
+  private static void UseModelWithSingleItem(MLContext mlContext, ITransformer model)
+        {
+            // (1) Create Prediction Engine
+            PredictionEngine<SentimentData, SentimentPrediction> predictionFunction
+                = mlContext.Model.CreatePredictionEngine<SentimentData, SentimentPrediction>(model);
 
-            // (2) ===== Load trained model ==========
-            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
-            ITransformer trainedModel = mlContent.Model.Load("model.zip", out modelSchema);
 
-            // (3) ===== Single Item ==========
-            UseModelWithSingleItem(mlContent, trainedModel);
+            string userstr;
+            Console.Write("Enter >: ");
+            userstr = Console.ReadLine();
+
+            while (userstr != "quit")
+            {
+                // (2) Create Test Sentiment
+                SentimentData sampleStatement = new SentimentData
+                {
+                    SentimentText = userstr
+                };
+
+                // (3) Predict
+                var resultPrediction = predictionFunction.Predict(sampleStatement);
+
+                Console.WriteLine();
+                Console.WriteLine("=============== Prediction Test of model  ===============");
+
+                Console.WriteLine();
+                Console.WriteLine($"Sentiment: {resultPrediction.SentimentText} " +
+                    $"| Prediction: {(Convert.ToBoolean(resultPrediction.Prediction) ? "Positive" : "Negative")} " +
+                    $"| Probability: {resultPrediction.Probability} ");
+
+                Console.WriteLine("=============== End of Predictions ===============");
+                Console.WriteLine();
+                Console.Write("Enter >: ");
+                userstr = Console.ReadLine();
+            }
+        }
