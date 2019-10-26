@@ -1,12 +1,9 @@
-public class SingleTaxiTripSample
-    {
-        public static readonly TaxiTrip Trip1 = new TaxiTrip
+ public static string GetAbsolutePath(string relativePath)
         {
-            VendorId = "VTS",
-            RateCode = "1",
-            PassengerCount = 1,
-            TripDistance = 10.33f,
-            PaymentType = "CSH",
-            FareAmount = 0 // predict it. actual = 29.5
-        };
-    }
+            FileInfo _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
+            string assemblyFolderPath = _dataRoot.Directory.FullName;
+
+            string fullPath = Path.Combine(assemblyFolderPath, relativePath);
+
+            return fullPath;
+        }
