@@ -1,9 +1,3 @@
- public static string GetAbsolutePath(string relativePath)
-        {
-            FileInfo _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
-            string assemblyFolderPath = _dataRoot.Directory.FullName;
-
-            string fullPath = Path.Combine(assemblyFolderPath, relativePath);
-
-            return fullPath;
-        }
+private static string TrainDataPath = GetAbsolutePath("Datas/taxi-fare-train.csv");
+        private static string TestDataPath = GetAbsolutePath("Datas/taxi-fare-test.csv");
+        private static string ModelPath = GetAbsolutePath("MLModels/TaxiFareModel.zip");
