@@ -1,7 +1,15 @@
- private static void DisplayResults(IEnumerable<ImagePrediction> imagePredictionData)
+ /// <summary>
+        /// 讀取影像資料 tags.tsv 檔案
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        public static IEnumerable<ImageData> ReadFromTsv(string file, string folder)
         {
-            foreach (ImagePrediction prediction in imagePredictionData)
-            {
-                Console.WriteLine($"Image: {Path.GetFileName(prediction.ImagePath)} predicted as: {prediction.PredictedLabelValue} with score: {prediction.Score.Max()} ");
-            }
+            return File.ReadAllLines(file)
+             .Select(line => line.Split('\t'))
+             .Select(line => new ImageData()
+             {
+                 ImagePath = Path.Combine(folder, line[0])
+             });
         }
