@@ -1,25 +1,29 @@
-public static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView splitTrainSet)
+ public static void Evaluate(MLContext mlContext, ITransformer model, IDataView splitTestSet)
         {
-            //(1) FeaturizeText and append the machine learning task
-            // Create a flexible pipeline (composed by a chain of estimators) for creating/training the model.
-            // This is used to format and clean the data.  
-            // Convert the text column to numeric vectors (Features column) 
-            // Text.FeaturizeText -> FeaturizeText
-            // Append BinaryClassification.Trainers -> AddTrainer
-            // <SnippetFeaturizeText>
-            var estimator = mlContext
-                .Transforms.Text.FeaturizeText(outputColumnName: "Features", inputColumnName: nameof(SentimentData.SentimentText))
-                .Append(mlContext.BinaryClassification.Trainers.SdcaLogisticRegression(labelColumnName: "Label"
-                                                                                        , featureColumnName: "Features"));
+            Console.WriteLine("=============== Evaluating Model accuracy with Test data===============");
+            IDataView predictions = model.Transform(splitTestSet);
 
-            // (2) Create and train the model based on the dataset that has been loaded, transformed.
-            //<SnippetTrainModel>
-            Console.WriteLine("=============== Create and Train the Model ===============");
-            var model = estimator.Fit(splitTrainSet);
-            Console.WriteLine("=============== End of training ===============");
+            // BinaryClassificationContext.Evaluate returns a BinaryClassificationEvaluator.CalibratedResult
+            // that contains the computed overall metrics.
+            // <SnippetEvaluate>
+            CalibratedBinaryClassificationMetrics metrics = mlContext.BinaryClassification.Evaluate(predictions, "Label");
+
+            // The Accuracy metric gets the accuracy of a model, which is the proportion 
+            // of correct predictions in the test set.
+            // The AreaUnderROCCurve metric is equal to the probability that the algorithm ranks
+            // a randomly chosen positive instance higher than a randomly chosen negative one
+            // (assuming 'positive' ranks higher than 'negative').
+            // The F1Score metric gets the model's F1 score.
+            // The F1 score is the harmonic mean of precision and recall:
+            //  2 * precision * recall / (precision + recall).
+            // <SnippetDisplayMetrics>
             Console.WriteLine();
+            Console.WriteLine("Model quality metrics evaluation");
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine($"Accuracy: {metrics.Accuracy:P2}");
+            Console.WriteLine($"Auc: {metrics.AreaUnderRocCurve:P2}");
+            Console.WriteLine($"F1Score: {metrics.F1Score:P2}");
+            Console.WriteLine("=============== End of model evaluation ===============");
+            //</SnippetDisplayMetrics>
 
-            // (3) Returns the model we trained to use for evaluation.
-            // <SnippetReturnModel>
-            return model;
         }
