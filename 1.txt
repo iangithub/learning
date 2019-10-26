@@ -1,24 +1,19 @@
- MLContext mlContext = new MLContext(seed: 1);
+ public class SentimentData
+    {
+        [LoadColumn(0)]
+        public string SentimentText;
 
-            var taxiTripSample = new TaxiTrip()
-            {
-                VendorId = "VTS",
-                RateCode = "1",
-                PassengerCount = 1,
-                TripTime = 1140,
-                TripDistance = 3.75f,
-                PaymentType = "CRD",
-                FareAmount = 0
-            };
+        [LoadColumn(1), ColumnName("Label")]
+        public bool Sentiment;
+    }
 
-            ITransformer trainedModel = mlContext.Model.Load(ModelPath, out var modelInputSchema);
+    public class SentimentPrediction : SentimentData
+    {
 
-            // Create prediction engine related to the loaded trained model
-            var predEngine = mlContext.Model.CreatePredictionEngine<TaxiTrip, TaxiTripFarePrediction>(trainedModel);
+        [ColumnName("PredictedLabel")]
+        public bool Prediction { get; set; }
 
-            //Score
-            var resultprediction = predEngine.Predict(taxiTripSample);
+        public float Probability { get; set; }
 
-            Console.WriteLine($"**********************************************************************");
-            Console.WriteLine($"Predicted fare: {resultprediction.FareAmount:0.####}, actual fare: 15.5");
-            Console.WriteLine($"**********************************************************************");
+        public float Score { get; set; }
+    }
