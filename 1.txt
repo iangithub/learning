@@ -1,12 +1,14 @@
- //(4) Prediction
-            var input = new MovieRating { userId = 6, movieId = 8 };
-            var movieRatingPrediction = predictionEngine.Predict(input);
+public class ImageData
+    {
+        [LoadColumn(0)]
+        public string ImagePath;
 
-            if (Math.Round(movieRatingPrediction.Score, 1) > 3.5)
-            {
-                Console.WriteLine("Movie " + input.movieId + " is recommended for user " + input.userId + " -- Score" + movieRatingPrediction.Score);
-            }
-            else
-            {
-                Console.WriteLine("Movie " + input.movieId + " is not recommended for user " + input.userId + " -- Score" + movieRatingPrediction.Score);
-            }
+        [LoadColumn(1)]
+        public float Label;
+    }
+
+    public class ImagePrediction : ImageData
+    {
+        [ColumnName("Score")]
+        public float FaceValue;
+    }
