@@ -1,6 +1,13 @@
-  var estimator = mlContext
-                .Transforms.Text.FeaturizeText(outputColumnName: "Features"
-                                                , inputColumnName: nameof(SentimentData.SentimentText))
-                .Append(mlContext.BinaryClassification.Trainers
-                .SdcaLogisticRegression(labelColumnName: "Label"
-                , featureColumnName: "Features"));
+
+                Console.WriteLine();
+                Console.WriteLine("=============== Prediction Test of model  ===============");
+
+                Console.WriteLine();
+                Console.WriteLine($"Sentiment: {resultPrediction.SentimentText} " +
+                    $"| Prediction: {(Convert.ToBoolean(resultPrediction.Prediction) ? "Positive" : "Negative")} " +
+                    $"| Probability: {resultPrediction.Probability} ");
+
+                Console.WriteLine("=============== End of Predictions ===============");
+                Console.WriteLine();
+                Console.Write("Enter >: ");
+                userstr = Console.ReadLine();
