@@ -1,14 +1,8 @@
-public class ImageData
-    {
-        [LoadColumn(0)]
-        public string ImagePath;
+       //資源路徑
+        static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
 
-        [LoadColumn(1)]
-        public float Label;
-    }
-
-    public class ImagePrediction : ImageData
-    {
-        [ColumnName("Score")]
-        public float FaceValue;
-    }
+        static readonly string _trainDataPath = Path.Combine(@"F:\ML Tech Project\Data\facerating", "Images");
+        static readonly string _trainTagsPath = Path.Combine(_assetsPath, "All_labels.csv");
+        static readonly string _testDataFolder = Path.Combine(@"F:\ML Tech Project\Data\facerating", "TestImages");
+        static readonly string inceptionPb = Path.Combine(_assetsPath, "tensorflow_inception_graph.pb");
+        static readonly string _outputfaceageZip = Path.Combine(_assetsPath,"faceage.zip");
