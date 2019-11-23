@@ -1,6 +1,9 @@
- MLContext mlContext = new MLContext();
-            DataViewSchema modelSchema; //Define DataViewSchema for data preparation pipeline and trained model
-            ITransformer trainedModel = mlContext.Model.Load(_inputImageClassifierZip, out modelSchema);
-
-            ClassifyImages(mlContext, _predictImageListTsv, _predictImagesFolder, _inputImageClassifierZip
-                , trainedModel);
+ var dataProcessPipeline = mlContext.Transforms.CopyColumns(outputColumnName: "Label", inputColumnName: nameof(TaxiTrip.FareAmount))
+                           .Append(mlContext.Transforms.Categorical.OneHotEncoding(outputColumnName: "VendorIdEncoded", inputColumnName: nameof(TaxiTrip.VendorId)))
+                           .Append(mlContext.Transforms.Categorical.OneHotEncoding(outputColumnName: "RateCodeEncoded", inputColumnName: nameof(TaxiTrip.RateCode)))
+                           .Append(mlContext.Transforms.Categorical.OneHotEncoding(outputColumnName: "PaymentTypeEncoded", inputColumnName: nameof(TaxiTrip.PaymentType)))
+                           .Append(mlContext.Transforms.NormalizeMeanVariance(outputColumnName: nameof(TaxiTrip.PassengerCount)))
+                           .Append(mlContext.Transforms.NormalizeMeanVariance(outputColumnName: nameof(TaxiTrip.TripTime)))
+                           .Append(mlContext.Transforms.NormalizeMeanVariance(outputColumnName: nameof(TaxiTrip.TripDistance)))
+                           .Append(mlContext.Transforms.Concatenate("Features", "VendorIdEncoded", "RateCodeEncoded", "PaymentTypeEncoded", nameof(TaxiTrip.PassengerCount)
+                           , nameof(TaxiTrip.TripTime), nameof(TaxiTrip.TripDistance)));
