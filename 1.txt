@@ -1,6 +1,12 @@
-IEstimator<ITransformer> estimator = mlContext
-                    .Transforms.Conversion.MapValueToKey(outputColumnName: "userIdEncoded"
-                                                        , inputColumnName: "userId")
-                    .Append(mlContext.Transforms.Conversion.MapValueToKey(
-                        outputColumnName: "movieIdEncoded"
-                        , inputColumnName: "movieId"));
+ //(4) Prediction
+            var input = new MovieRating { userId = 6, movieId = 8 };
+            var movieRatingPrediction = predictionEngine.Predict(input);
+
+            if (Math.Round(movieRatingPrediction.Score, 1) > 3.5)
+            {
+                Console.WriteLine("Movie " + input.movieId + " is recommended for user " + input.userId + " -- Score" + movieRatingPrediction.Score);
+            }
+            else
+            {
+                Console.WriteLine("Movie " + input.movieId + " is not recommended for user " + input.userId + " -- Score" + movieRatingPrediction.Score);
+            }
