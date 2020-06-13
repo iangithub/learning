@@ -1,4 +1,3 @@
- // Add your Face subscription key 
-        private const string subscriptionKey = "";
-        // Add your Face endpoint 
-        private const string faceEndpoint = "";
+ private readonly IFaceClient faceClient = new FaceClient(
+            new ApiKeyServiceClientCredentials(subscriptionKey),
+            new System.Net.Http.DelegatingHandler[] { });
