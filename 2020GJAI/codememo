@@ -1,37 +1,58 @@
- // 上傳照片至FACE API
-        private async Task<IList<DetectedFace>> UploadAndDetectFaces(string imageFilePath)
+// 臉部資訊
+        private string FaceDescription(DetectedFace face)
         {
-            //檢測結果集
-            IList<FaceAttributeType> faceAttributes =
-                new FaceAttributeType[]
-                {
-                    FaceAttributeType.Gender, FaceAttributeType.Age,
-                    FaceAttributeType.Smile, FaceAttributeType.Emotion,
-                    FaceAttributeType.Glasses, FaceAttributeType.Hair
-                };
+            StringBuilder sb = new StringBuilder();
 
-            //呼叫FACE API
-            try
+            sb.Append("Face: ");
+
+            sb.Append(face.FaceAttributes.Gender);
+            sb.Append(", ");
+            sb.Append(face.FaceAttributes.Age);
+            sb.Append(", ");
+            sb.Append(String.Format("smile {0:F1}%, ", face.FaceAttributes.Smile * 100));
+
+            // Add the emotions. Display all emotions over 10%.
+            sb.Append("Emotion: ");
+            Emotion emotionScores = face.FaceAttributes.Emotion;
+            if (emotionScores.Anger >= 0.1f) sb.Append(
+                String.Format("anger {0:F1}%, ", emotionScores.Anger * 100));
+            if (emotionScores.Contempt >= 0.1f) sb.Append(
+                String.Format("contempt {0:F1}%, ", emotionScores.Contempt * 100));
+            if (emotionScores.Disgust >= 0.1f) sb.Append(
+                String.Format("disgust {0:F1}%, ", emotionScores.Disgust * 100));
+            if (emotionScores.Fear >= 0.1f) sb.Append(
+                String.Format("fear {0:F1}%, ", emotionScores.Fear * 100));
+            if (emotionScores.Happiness >= 0.1f) sb.Append(
+                String.Format("happiness {0:F1}%, ", emotionScores.Happiness * 100));
+            if (emotionScores.Neutral >= 0.1f) sb.Append(
+                String.Format("neutral {0:F1}%, ", emotionScores.Neutral * 100));
+            if (emotionScores.Sadness >= 0.1f) sb.Append(
+                String.Format("sadness {0:F1}%, ", emotionScores.Sadness * 100));
+            if (emotionScores.Surprise >= 0.1f) sb.Append(
+                String.Format("surprise {0:F1}%, ", emotionScores.Surprise * 100));
+
+            // Add glasses.
+            sb.Append(face.FaceAttributes.Glasses);
+            sb.Append(", ");
+
+            // Add hair.
+            sb.Append("Hair: ");
+
+            // Display baldness confidence if over 1%.
+            if (face.FaceAttributes.Hair.Bald >= 0.01f)
+                sb.Append(String.Format("bald {0:F1}% ", face.FaceAttributes.Hair.Bald * 100));
+
+            // Display all hair color attributes over 10%.
+            IList<HairColor> hairColors = face.FaceAttributes.Hair.HairColor;
+            foreach (HairColor hairColor in hairColors)
             {
-                using (Stream imageFileStream = File.OpenRead(imageFilePath))
+                if (hairColor.Confidence >= 0.1f)
                 {
-                    // 第二個參數指定回傳faceId
-                    // 第三個參數指定不回傳人臉細部座標
-                    IList<DetectedFace> faceList =
-                        await faceClient.Face.DetectWithStreamAsync(
-                            imageFileStream, true, false, faceAttributes);
-                    return faceList;
+                    sb.Append(hairColor.Color.ToString());
+                    sb.Append(String.Format(" {0:F1}% ", hairColor.Confidence * 100));
                 }
             }
-            catch (APIErrorException f)
-            {
-                MessageBox.Show(f.Message);
-                return new List<DetectedFace>();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error");
-                return new List<DetectedFace>();
-            }
-        }
 
+            // Return the built string.
+            return sb.ToString();
+        }
