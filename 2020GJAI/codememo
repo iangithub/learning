@@ -1,13 +1,97 @@
-using Microsoft.Azure.CognitiveServices.Vision.Face;
-using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+//顯示照片並呼叫 UploadAndDetectFaces
+        private async void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 取得使用者照片
+            var openDlg = new Microsoft.Win32.OpenFileDialog();
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+            openDlg.Filter = "JPEG Image(*.jpg)|*.jpg";
+            bool? result = openDlg.ShowDialog(this);
+
+            // Return if canceled.
+            if (!(bool)result)
+            {
+                return;
+            }
+
+            // 顯示使用者照片
+            string filePath = openDlg.FileName;
+
+            Uri fileUri = new Uri(filePath);
+            BitmapImage bitmapSource = new BitmapImage();
+
+            bitmapSource.BeginInit();
+            bitmapSource.CacheOption = BitmapCacheOption.None;
+            bitmapSource.UriSource = fileUri;
+            bitmapSource.EndInit();
+
+            FacePhoto.Source = bitmapSource;
+
+            // 檢測圖像中的臉孔
+            Title = "檢測中...";
+            faceList = await UploadAndDetectFaces(filePath); //上傳Azure Face API
+            Title = String.Format(
+                "檢測完成. {0} 個臉部被檢測", faceList.Count);
+
+            //有檢測出臉部
+            if (faceList.Count > 0)
+            {
+                //準備在臉部周圍繪製矩形
+                DrawingVisual visual = new DrawingVisual();
+                DrawingContext drawingContext = visual.RenderOpen();
+                drawingContext.DrawImage(bitmapSource, new Rect(0, 0, bitmapSource.Width, bitmapSource.Height));
+                double dpi = bitmapSource.DpiX;
+                // 有些照片不包含 dpi 資訊.
+                resizeFactor = (dpi == 0) ? 1 : 96 / dpi;
+                faceDescriptions = new String[faceList.Count];
+
+                for (int i = 0; i < faceList.Count; ++i)
+                {
+                    DetectedFace face = faceList[i];
+
+                    // 在臉部周圍繪製矩形.
+                    drawingContext.DrawRectangle(
+                        Brushes.Transparent,
+                        new Pen(Brushes.Red, 2),
+                        new Rect(
+                            face.FaceRectangle.Left * resizeFactor,
+                            face.FaceRectangle.Top * resizeFactor,
+                            face.FaceRectangle.Width * resizeFactor,
+                            face.FaceRectangle.Height * resizeFactor
+                            )
+                    );
+
+                    //在臉部周圍顯示性別(年齡)
+                    var x = (face.FaceRectangle.Left * resizeFactor) + face.FaceRectangle.Width * resizeFactor + 5;
+                    var y = (face.FaceRectangle.Top * resizeFactor);
+
+                    drawingContext.DrawText(
+                           new FormattedText(
+                               face.FaceAttributes.Gender.ToString() + "(" + face.FaceAttributes.Age.ToString() + ")",
+                              CultureInfo.GetCultureInfo("zh-tw"),
+                              FlowDirection.LeftToRight,
+                              new Typeface("Verdana"),
+                              8, System.Windows.Media.Brushes.Red),
+                              new System.Windows.Point(x, y)
+                     );
+
+                    // 儲存臉部資訊
+                    faceDescriptions[i] = FaceDescription(face);
+                }
+
+                drawingContext.Close();
+
+                // 顯示臉部矩形
+                RenderTargetBitmap faceWithRectBitmap = new RenderTargetBitmap(
+                    (int)(bitmapSource.PixelWidth * resizeFactor),
+                    (int)(bitmapSource.PixelHeight * resizeFactor),
+                    96,
+                    96,
+                    PixelFormats.Pbgra32);
+
+                faceWithRectBitmap.Render(visual);
+                FacePhoto.Source = faceWithRectBitmap;
+
+                // 顯示側邊資訊
+                faceDescriptionStatusBar.Text = defaultStatusBarText;
+            }
+        }
