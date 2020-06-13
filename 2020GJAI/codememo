@@ -1,4 +1,4 @@
  // Add your Face subscription key 
-        private const string subscriptionKey = "a6ef6d6da92a4a8e8b030686d838b065";
+        private const string subscriptionKey = "";
         // Add your Face endpoint 
-        private const string faceEndpoint = "https://gjface.cognitiveservices.azure.com/";
+        private const string faceEndpoint = "";
