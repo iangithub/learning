@@ -1,11 +1,1 @@
 
-if (Uri.IsWellFormedUriString(faceEndpoint, UriKind.Absolute))
-            {
-                faceClient.Endpoint = faceEndpoint;
-            }
-            else
-            {
-                MessageBox.Show(faceEndpoint,
-                    "Invalid URI", MessageBoxButton.OK, MessageBoxImage.Error);
-                Environment.Exit(0);
-            }
