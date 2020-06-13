@@ -1,97 +1,45 @@
-//顯示照片並呼叫 UploadAndDetectFaces
-        private async void BrowseButton_Click(object sender, RoutedEventArgs e)
+ /// <summary>
+        /// 滑鼠移動至臉部區域
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FacePhoto_MouseMove(object sender, MouseEventArgs e)
         {
-            // 取得使用者照片
-            var openDlg = new Microsoft.Win32.OpenFileDialog();
-
-            openDlg.Filter = "JPEG Image(*.jpg)|*.jpg";
-            bool? result = openDlg.ShowDialog(this);
-
-            // Return if canceled.
-            if (!(bool)result)
-            {
+            // FACE API還沒有完成檢測
+            if (faceList == null)
                 return;
-            }
 
-            // 顯示使用者照片
-            string filePath = openDlg.FileName;
+            // 取得滑鼠座標軸
+            Point mouseXY = e.GetPosition(FacePhoto);
 
-            Uri fileUri = new Uri(filePath);
-            BitmapImage bitmapSource = new BitmapImage();
+            ImageSource imageSource = FacePhoto.Source;
+            BitmapSource bitmapSource = (BitmapSource)imageSource;
 
-            bitmapSource.BeginInit();
-            bitmapSource.CacheOption = BitmapCacheOption.None;
-            bitmapSource.UriSource = fileUri;
-            bitmapSource.EndInit();
+            // 計算顯示與實際比例
+            var scale = FacePhoto.ActualWidth / (bitmapSource.PixelWidth / resizeFactor);
 
-            FacePhoto.Source = bitmapSource;
+            // 滑鼠已超出臉部區域
+            bool mouseOverFace = false;
 
-            // 檢測圖像中的臉孔
-            Title = "檢測中...";
-            faceList = await UploadAndDetectFaces(filePath); //上傳Azure Face API
-            Title = String.Format(
-                "檢測完成. {0} 個臉部被檢測", faceList.Count);
-
-            //有檢測出臉部
-            if (faceList.Count > 0)
+            for (int i = 0; i < faceList.Count; ++i)
             {
-                //準備在臉部周圍繪製矩形
-                DrawingVisual visual = new DrawingVisual();
-                DrawingContext drawingContext = visual.RenderOpen();
-                drawingContext.DrawImage(bitmapSource, new Rect(0, 0, bitmapSource.Width, bitmapSource.Height));
-                double dpi = bitmapSource.DpiX;
-                // 有些照片不包含 dpi 資訊.
-                resizeFactor = (dpi == 0) ? 1 : 96 / dpi;
-                faceDescriptions = new String[faceList.Count];
+                FaceRectangle fr = faceList[i].FaceRectangle;
+                double left = fr.Left * scale;
+                double top = fr.Top * scale;
+                double width = fr.Width * scale;
+                double height = fr.Height * scale;
 
-                for (int i = 0; i < faceList.Count; ++i)
+                // 顯示臉部資訊
+                if (mouseXY.X >= left && mouseXY.X <= left + width &&
+                    mouseXY.Y >= top && mouseXY.Y <= top + height)
                 {
-                    DetectedFace face = faceList[i];
-
-                    // 在臉部周圍繪製矩形.
-                    drawingContext.DrawRectangle(
-                        Brushes.Transparent,
-                        new Pen(Brushes.Red, 2),
-                        new Rect(
-                            face.FaceRectangle.Left * resizeFactor,
-                            face.FaceRectangle.Top * resizeFactor,
-                            face.FaceRectangle.Width * resizeFactor,
-                            face.FaceRectangle.Height * resizeFactor
-                            )
-                    );
-
-                    //在臉部周圍顯示性別(年齡)
-                    var x = (face.FaceRectangle.Left * resizeFactor) + face.FaceRectangle.Width * resizeFactor + 5;
-                    var y = (face.FaceRectangle.Top * resizeFactor);
-
-                    drawingContext.DrawText(
-                           new FormattedText(
-                               face.FaceAttributes.Gender.ToString() + "(" + face.FaceAttributes.Age.ToString() + ")",
-                              CultureInfo.GetCultureInfo("zh-tw"),
-                              FlowDirection.LeftToRight,
-                              new Typeface("Verdana"),
-                              8, System.Windows.Media.Brushes.Red),
-                              new System.Windows.Point(x, y)
-                     );
-
-                    // 儲存臉部資訊
-                    faceDescriptions[i] = FaceDescription(face);
+                    faceDescriptionStatusBar.Text = faceDescriptions[i];
+                    mouseOverFace = true;
+                    break;
                 }
-
-                drawingContext.Close();
-
-                // 顯示臉部矩形
-                RenderTargetBitmap faceWithRectBitmap = new RenderTargetBitmap(
-                    (int)(bitmapSource.PixelWidth * resizeFactor),
-                    (int)(bitmapSource.PixelHeight * resizeFactor),
-                    96,
-                    96,
-                    PixelFormats.Pbgra32);
-
-                faceWithRectBitmap.Render(visual);
-                FacePhoto.Source = faceWithRectBitmap;
-
-                // 顯示側邊資訊
-                faceDescriptionStatusBar.Text = defaultStatusBarText;
             }
+
+            // 滑鼠已超出臉部區域，側邊顯示預設訊息
+            if (!mouseOverFace) faceDescriptionStatusBar.Text = defaultStatusBarText;
+
         }
