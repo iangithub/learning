@@ -1,45 +1,37 @@
- /// <summary>
-        /// 滑鼠移動至臉部區域
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FacePhoto_MouseMove(object sender, MouseEventArgs e)
+ // 上傳照片至FACE API
+        private async Task<IList<DetectedFace>> UploadAndDetectFaces(string imageFilePath)
         {
-            // FACE API還沒有完成檢測
-            if (faceList == null)
-                return;
-
-            // 取得滑鼠座標軸
-            Point mouseXY = e.GetPosition(FacePhoto);
-
-            ImageSource imageSource = FacePhoto.Source;
-            BitmapSource bitmapSource = (BitmapSource)imageSource;
-
-            // 計算顯示與實際比例
-            var scale = FacePhoto.ActualWidth / (bitmapSource.PixelWidth / resizeFactor);
-
-            // 滑鼠已超出臉部區域
-            bool mouseOverFace = false;
-
-            for (int i = 0; i < faceList.Count; ++i)
-            {
-                FaceRectangle fr = faceList[i].FaceRectangle;
-                double left = fr.Left * scale;
-                double top = fr.Top * scale;
-                double width = fr.Width * scale;
-                double height = fr.Height * scale;
-
-                // 顯示臉部資訊
-                if (mouseXY.X >= left && mouseXY.X <= left + width &&
-                    mouseXY.Y >= top && mouseXY.Y <= top + height)
+            //檢測結果集
+            IList<FaceAttributeType> faceAttributes =
+                new FaceAttributeType[]
                 {
-                    faceDescriptionStatusBar.Text = faceDescriptions[i];
-                    mouseOverFace = true;
-                    break;
+                    FaceAttributeType.Gender, FaceAttributeType.Age,
+                    FaceAttributeType.Smile, FaceAttributeType.Emotion,
+                    FaceAttributeType.Glasses, FaceAttributeType.Hair
+                };
+
+            //呼叫FACE API
+            try
+            {
+                using (Stream imageFileStream = File.OpenRead(imageFilePath))
+                {
+                    // 第二個參數指定回傳faceId
+                    // 第三個參數指定不回傳人臉細部座標
+                    IList<DetectedFace> faceList =
+                        await faceClient.Face.DetectWithStreamAsync(
+                            imageFileStream, true, false, faceAttributes);
+                    return faceList;
                 }
             }
-
-            // 滑鼠已超出臉部區域，側邊顯示預設訊息
-            if (!mouseOverFace) faceDescriptionStatusBar.Text = defaultStatusBarText;
-
+            catch (APIErrorException f)
+            {
+                MessageBox.Show(f.Message);
+                return new List<DetectedFace>();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error");
+                return new List<DetectedFace>();
+            }
         }
+
