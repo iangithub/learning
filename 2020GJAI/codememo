@@ -1,22 +1,13 @@
+using Microsoft.Azure.CognitiveServices.Vision.Face;
+using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 
-<Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-
-        <StackPanel Grid.Column="0">
-            <Image x:Name="FacePhoto" Stretch="Uniform" Margin="0,0,0,50" MouseMove="FacePhoto_MouseMove" />
-        </StackPanel>
-
-        <StackPanel  Grid.Column="1">
-            <Button x:Name="BrowseButton" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Bottom"
-                     Content="瀏覽"
-                     Click="BrowseButton_Click" />
-            <StatusBar VerticalAlignment="Bottom">
-                <StatusBarItem RenderTransformOrigin="0.5,0.5" Height="636">
-                    <TextBlock  Name="faceDescriptionStatusBar" Height="800" TextWrapping="WrapWithOverflow" HorizontalAlignment="Stretch"/>
-                </StatusBarItem>
-            </StatusBar>
-        </StackPanel>
-    </Grid>
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
