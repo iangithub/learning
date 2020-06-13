@@ -1,13 +1,4 @@
-using Microsoft.Azure.CognitiveServices.Vision.Face;
-using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+ // Add your Face subscription key 
+        private const string subscriptionKey = "a6ef6d6da92a4a8e8b030686d838b065";
+        // Add your Face endpoint 
+        private const string faceEndpoint = "https://gjface.cognitiveservices.azure.com/";
