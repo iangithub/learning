@@ -1,3 +1,8 @@
- private readonly IFaceClient faceClient = new FaceClient(
-            new ApiKeyServiceClientCredentials(subscriptionKey),
-            new System.Net.Http.DelegatingHandler[] { });
+ // 臉部偵測清單.
+        private IList<DetectedFace> faceList;
+        // 臉部描述資料
+        private string[] faceDescriptions;
+        // 顯示影像resize
+        private double resizeFactor;
+
+        private const string defaultStatusBarText ="請將滑鼠移動至臉部區域";
