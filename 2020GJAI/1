@@ -1,59 +1,19 @@
- // Create grabber. 
-            _grabber = new FrameGrabber<LiveCameraResult>();
-
-            // Set up a listener for when the client receives a new frame.
-            _grabber.NewFrameProvided += (s, e) =>
-            {
-                // The callback may occur on a different thread, so we must use the
-                // MainWindow.Dispatcher when manipulating the UI. 
-                this.Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    // Display the image in the left pane.
-                    LeftImage.Source = e.Frame.Image.ToBitmapSource();
-
-                    // If we're fusing client-side face detection with remote analysis, show the
-                    // new frame now with the most recent analysis available. 
-                    if (_fuseClientRemoteResults)
-                    {
-                        RightImage.Source = VisualizeResult(e.Frame);
-                    }
-                }));
-
-                // See if auto-stop should be triggered. 
-                if (Properties.Settings.Default.AutoStopEnabled && (DateTime.Now - _startTime) > Properties.Settings.Default.AutoStopTime)
-                {
-                    _grabber.StopProcessingAsync().GetAwaiter().GetResult();
-                }
+/// <summary> submits a frame to the Face API. </summary>
+        private async Task<LiveCameraResult> FacesAnalysisFunction(VideoFrame frame)
+        {
+            // Encode image. 
+            var jpg = frame.Image.ToMemoryStream(".jpg", s_jpegParams);
+            // Submit image to API. 
+            var attrs = new List<FaceAPI.Models.FaceAttributeType> {
+                FaceAPI.Models.FaceAttributeType.Age,
+                FaceAPI.Models.FaceAttributeType.Gender,
+                FaceAPI.Models.FaceAttributeType.Emotion,
+                FaceAPI.Models.FaceAttributeType.Glasses,
+                FaceAPI.Models.FaceAttributeType.HeadPose
             };
-
-            // Set up a listener for when the client receives a new result from an API call. 
-            _grabber.NewResultAvailable += (s, e) =>
-            {
-                this.Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    if (e.TimedOut)
-                    {
-                        MessageArea.Text = "API call timed out.";
-                    }
-                    else if (e.Exception != null)
-                    {
-                        string apiName = "";
-                        string message = e.Exception.Message;
-                        var faceEx = e.Exception as FaceAPI.Models.APIErrorException;
-                        var visionEx = e.Exception as VisionAPI.Models.ComputerVisionErrorException;
-                        apiName = "Face";
-                        message = faceEx.Message;
-                        MessageArea.Text = string.Format("{0} API call failed on frame {1}. Exception: {2}", apiName, e.Frame.Metadata.Index, message);
-                    }
-                    else
-                    {
-                        _latestResultsToDisplay = e.Analysis;
-
-                        // Display the image and visualization in the right pane. 
-                        if (!_fuseClientRemoteResults)
-                        {
-                            RightImage.Source = VisualizeResult(e.Frame);
-                        }
-                    }
-                }));
-            };
+            var faces = await _faceClient.Face.DetectWithStreamAsync(jpg, returnFaceAttributes: attrs);
+            // Count the API call. 
+            Properties.Settings.Default.FaceAPICallCount++;
+            // Output. 
+            return new LiveCameraResult { Faces = faces.ToArray() };
+        }
