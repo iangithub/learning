@@ -1,19 +1,31 @@
-/// <summary> submits a frame to the Face API. </summary>
-        private async Task<LiveCameraResult> FacesAnalysisFunction(VideoFrame frame)
+ /// <summary> submits a frame to the Emotion API </summary>
+        private async Task<LiveCameraResult> EmotionAnalysisFunction(VideoFrame frame)
         {
             // Encode image. 
             var jpg = frame.Image.ToMemoryStream(".jpg", s_jpegParams);
             // Submit image to API. 
-            var attrs = new List<FaceAPI.Models.FaceAttributeType> {
-                FaceAPI.Models.FaceAttributeType.Age,
-                FaceAPI.Models.FaceAttributeType.Gender,
-                FaceAPI.Models.FaceAttributeType.Emotion,
-                FaceAPI.Models.FaceAttributeType.Glasses,
-                FaceAPI.Models.FaceAttributeType.HeadPose
-            };
-            var faces = await _faceClient.Face.DetectWithStreamAsync(jpg, returnFaceAttributes: attrs);
-            // Count the API call. 
-            Properties.Settings.Default.FaceAPICallCount++;
+            FaceAPI.Models.DetectedFace[] faces = null;
+
+            // See if we have local face detections for this image.
+            var localFaces = (OpenCvSharp.Rect[])frame.UserData;
+            if (localFaces == null || localFaces.Count() > 0)
+            {
+                Properties.Settings.Default.FaceAPICallCount++;
+                faces = (await _faceClient.Face.DetectWithStreamAsync(
+                    jpg,
+                    returnFaceId: false,
+                    returnFaceLandmarks: false,
+                    returnFaceAttributes: new FaceAPI.Models.FaceAttributeType[1] { FaceAPI.Models.FaceAttributeType.Emotion })).ToArray();
+            }
+            else
+            {
+                // Local face detection found no faces; don't call Cognitive Services.
+                faces = new FaceAPI.Models.DetectedFace[0];
+            }
+
             // Output. 
-            return new LiveCameraResult { Faces = faces.ToArray() };
+            return new LiveCameraResult
+            {
+                Faces = faces
+            };
         }
