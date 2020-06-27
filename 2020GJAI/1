@@ -1,10 +1,59 @@
- private FaceAPI.FaceClient _faceClient = null;
-        private readonly FrameGrabber<LiveCameraResult> _grabber;
-        private static readonly ImageEncodingParam[] s_jpegParams = {
-            new ImageEncodingParam(ImwriteFlags.JpegQuality, 80)
-        };
-        private readonly CascadeClassifier _localFaceDetector = new CascadeClassifier();
-        private bool _fuseClientRemoteResults;
-        private LiveCameraResult _latestResultsToDisplay = null;
-        private AppMode _mode;
-        private DateTime _startTime;
+ // Create grabber. 
+            _grabber = new FrameGrabber<LiveCameraResult>();
+
+            // Set up a listener for when the client receives a new frame.
+            _grabber.NewFrameProvided += (s, e) =>
+            {
+                // The callback may occur on a different thread, so we must use the
+                // MainWindow.Dispatcher when manipulating the UI. 
+                this.Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    // Display the image in the left pane.
+                    LeftImage.Source = e.Frame.Image.ToBitmapSource();
+
+                    // If we're fusing client-side face detection with remote analysis, show the
+                    // new frame now with the most recent analysis available. 
+                    if (_fuseClientRemoteResults)
+                    {
+                        RightImage.Source = VisualizeResult(e.Frame);
+                    }
+                }));
+
+                // See if auto-stop should be triggered. 
+                if (Properties.Settings.Default.AutoStopEnabled && (DateTime.Now - _startTime) > Properties.Settings.Default.AutoStopTime)
+                {
+                    _grabber.StopProcessingAsync().GetAwaiter().GetResult();
+                }
+            };
+
+            // Set up a listener for when the client receives a new result from an API call. 
+            _grabber.NewResultAvailable += (s, e) =>
+            {
+                this.Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    if (e.TimedOut)
+                    {
+                        MessageArea.Text = "API call timed out.";
+                    }
+                    else if (e.Exception != null)
+                    {
+                        string apiName = "";
+                        string message = e.Exception.Message;
+                        var faceEx = e.Exception as FaceAPI.Models.APIErrorException;
+                        var visionEx = e.Exception as VisionAPI.Models.ComputerVisionErrorException;
+                        apiName = "Face";
+                        message = faceEx.Message;
+                        MessageArea.Text = string.Format("{0} API call failed on frame {1}. Exception: {2}", apiName, e.Frame.Metadata.Index, message);
+                    }
+                    else
+                    {
+                        _latestResultsToDisplay = e.Analysis;
+
+                        // Display the image and visualization in the right pane. 
+                        if (!_fuseClientRemoteResults)
+                        {
+                            RightImage.Source = VisualizeResult(e.Frame);
+                        }
+                    }
+                }));
+            };
