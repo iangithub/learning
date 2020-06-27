@@ -1,31 +1,21 @@
- /// <summary> submits a frame to the Emotion API </summary>
-        private async Task<LiveCameraResult> EmotionAnalysisFunction(VideoFrame frame)
+ private BitmapSource VisualizeResult(VideoFrame frame)
         {
-            // Encode image. 
-            var jpg = frame.Image.ToMemoryStream(".jpg", s_jpegParams);
-            // Submit image to API. 
-            FaceAPI.Models.DetectedFace[] faces = null;
+            // Draw any results on top of the image. 
+            BitmapSource visImage = frame.Image.ToBitmapSource();
 
-            // See if we have local face detections for this image.
-            var localFaces = (OpenCvSharp.Rect[])frame.UserData;
-            if (localFaces == null || localFaces.Count() > 0)
+            var result = _latestResultsToDisplay;
+
+            if (result != null)
             {
-                Properties.Settings.Default.FaceAPICallCount++;
-                faces = (await _faceClient.Face.DetectWithStreamAsync(
-                    jpg,
-                    returnFaceId: false,
-                    returnFaceLandmarks: false,
-                    returnFaceAttributes: new FaceAPI.Models.FaceAttributeType[1] { FaceAPI.Models.FaceAttributeType.Emotion })).ToArray();
-            }
-            else
-            {
-                // Local face detection found no faces; don't call Cognitive Services.
-                faces = new FaceAPI.Models.DetectedFace[0];
+                // See if we have local face detections for this image.
+                var clientFaces = (OpenCvSharp.Rect[])frame.UserData;
+                if (clientFaces != null && result.Faces != null)
+                {
+                    MatchAndReplaceFaceRectangles(result.Faces, clientFaces);
+                }
+
+                visImage = Visualization.DrawFaces(visImage, result.Faces);
             }
 
-            // Output. 
-            return new LiveCameraResult
-            {
-                Faces = faces
-            };
+            return visImage;
         }
