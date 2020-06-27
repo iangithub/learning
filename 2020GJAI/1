@@ -1,1 +1,13 @@
 
+ TrainingStatus trainingStatus = null;
+            while (true)
+            {
+                trainingStatus = await faceClient.PersonGroup.GetTrainingStatusAsync(personGroupId);
+
+                if (trainingStatus.Status != TrainingStatusType.Running)
+                {
+                    break;
+                }
+
+                await Task.Delay(1000);
+            }
