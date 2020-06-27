@@ -1,14 +1,11 @@
- /// <summary> CameraList in the UI </summary>
-        private void CameraList_Loaded(object sender, RoutedEventArgs e)
+/// <summary> Populate ModeList in the UI, once it is loaded. </summary>
+        /// <param name="sender"> Source of the event. </param>
+        /// <param name="e">      Routed event information. </param>
+        private void ModeList_Loaded(object sender, RoutedEventArgs e)
         {
-            int numCameras = _grabber.GetNumCameras();
-
-            if (numCameras == 0)
-            {
-                MessageArea.Text = "No cameras found!";
-            }
+            var modes = (AppMode[])Enum.GetValues(typeof(AppMode));
 
             var comboBox = sender as ComboBox;
-            comboBox.ItemsSource = Enumerable.Range(0, numCameras).Select(i => string.Format("Camera {0}", i + 1));
+            comboBox.ItemsSource = modes.Select(m => m.ToString());
             comboBox.SelectedIndex = 0;
         }
