@@ -1,4 +1,10 @@
- private async void StopButton_Click(object sender, RoutedEventArgs e)
+  private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            await _grabber.StopProcessingAsync();
+            SettingsPanel.Visibility = 1 - SettingsPanel.Visibility;
+        }
+
+        private void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsPanel.Visibility = Visibility.Hidden;
+            Properties.Settings.Default.Save();
         }
