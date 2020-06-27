@@ -1,11 +1,21 @@
-/// <summary> Populate ModeList in the UI, once it is loaded. </summary>
-        /// <param name="sender"> Source of the event. </param>
-        /// <param name="e">      Routed event information. </param>
-        private void ModeList_Loaded(object sender, RoutedEventArgs e)
+ private void ModeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var modes = (AppMode[])Enum.GetValues(typeof(AppMode));
+            // Disable "most-recent" results display. 
+            _fuseClientRemoteResults = false;
 
             var comboBox = sender as ComboBox;
-            comboBox.ItemsSource = modes.Select(m => m.ToString());
-            comboBox.SelectedIndex = 0;
+            var modes = (AppMode[])Enum.GetValues(typeof(AppMode));
+            _mode = modes[comboBox.SelectedIndex];
+            switch (_mode)
+            {
+                case AppMode.Faces:
+                    _grabber.AnalysisFunction = FacesAnalysisFunction;
+                    break;
+                case AppMode.Emotions:
+                    _grabber.AnalysisFunction = EmotionAnalysisFunction;
+                    break;
+                default:
+                    _grabber.AnalysisFunction = null;
+                    break;
+            }
         }
