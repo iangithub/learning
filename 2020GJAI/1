@@ -1,30 +1,17 @@
-static async void MakeAnalysisRequest(string imageFilePath)
-        {
-            HttpClient client = new HttpClient();
-
-            client.DefaultRequestHeaders.Add("Prediction-Key", subscriptionKey);
-
-            // Assemble the URI for the REST API Call.
-            string uri = endpoint;
-
-            HttpResponseMessage response;
-
-            // Request body. Posts a locally stored JPEG image.
-            byte[] byteData = GetImageAsByteArray(imageFilePath);
-
-            using (ByteArrayContent content = new ByteArrayContent(byteData))
+ if (File.Exists(imgfile))
             {
-                content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/octet-stream");
-
-                // Execute the REST API call.
-                response = await client.PostAsync(uri, content);
-
-                // Get the JSON response.
-                string contentString = await response.Content.ReadAsStringAsync();
-
-                // Display the JSON response.
-                Console.WriteLine("\n 辨識結果:\n");
-                Console.WriteLine(contentString);
+                try
+                {
+                    MakeAnalysisRequest(imgfile);
+                    Console.WriteLine("辨識中 ....\n");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("\n" + e.Message + "\nPress Enter to exit...\n");
+                }
             }
-        }
+            else
+            {
+                Console.WriteLine("\n 檔案不存在 \n");
+            }
+            Console.ReadLine();
