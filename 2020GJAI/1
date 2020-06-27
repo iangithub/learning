@@ -1,33 +1,19 @@
-<Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image x:Name="LeftImage" Grid.Column="0" Margin="5" />
-            <Image x:Name="RightImage" Grid.Column="1" Margin="5" Panel.ZIndex="1" />
-            <StackPanel Visibility="{Binding Source={StaticResource Settings}, Path=Default.SettingsPanelVisibility, Mode=TwoWay}" Grid.Column="1" Panel.ZIndex="2" Name="SettingsPanel" Background="LightGray" VerticalAlignment="Top" Margin="5">
-                <TextBlock Margin="5" Grid.Row="0" FontWeight="Bold" Text="Settings"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Margin="5" Grid.Row="0" Grid.Column="0" Text="Face API Key:" />
-                    <TextBox   Margin="5" Grid.Row="0" Grid.Column="1" Text="{Binding Source={StaticResource Settings}, Path=Default.FaceAPIKey, Mode=TwoWay}" />
-                    <TextBlock Margin="5" Grid.Row="1" Grid.Column="0" Text="Face API Host:" />
-                    <TextBox   Margin="5" Grid.Row="1" Grid.Column="1" Text="{Binding Source={StaticResource Settings}, Path=Default.FaceAPIHost, Mode=TwoWay}" />
-                    <TextBlock Margin="5" Grid.Row="2" Grid.Column="0" Text="API Call Interval:" />
-                    <TextBox   Margin="5" Grid.Row="2" Grid.Column="1" Text="{Binding Source={StaticResource Settings}, Path=Default.AnalysisInterval, Mode=TwoWay}" />
-                </Grid>
-                <TextBlock Margin="5,0,5,5">
-                    <Run Text="Face API calls = "/><Run Text="{Binding Source={StaticResource Settings}, Path=Default.FaceAPICallCount}"/><LineBreak />
-                </TextBlock>
-                <CheckBox Margin="5" IsChecked="{Binding Source={StaticResource Settings}, Path=Default.AutoStopEnabled}" ContentStringFormat="Automatically stop after {0}" Content="{Binding Source={StaticResource Settings}, Path=Default.AutoStopTime}" />
-                <Button Margin="5" Content="Save" Click="SaveSettingsButton_Click" />
-            </StackPanel>
-        </Grid>
+using Microsoft.Azure.CognitiveServices.Vision.Face;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using FaceAPI = Microsoft.Azure.CognitiveServices.Vision.Face;
+using VisionAPI = Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
