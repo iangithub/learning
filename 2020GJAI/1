@@ -1,3 +1,9 @@
-   private const string subscriptionKey = "dcf87780f1734ad18fdad3a10af09b62";
-        private const string endpoint = "https://mystore.cognitiveservices.azure.com/customvision/v3.0/Prediction/4c729ac0-3042-4d6c-a8b8-306979ee49f0/classify/iterations/Iteration2/image";
-        private const string imgfile = "img/IMG_9022.jpg";
+static byte[] GetImageAsByteArray(string imageFilePath)
+        {
+            using (FileStream fileStream =
+                new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+            {
+                BinaryReader binaryReader = new BinaryReader(fileStream);
+                return binaryReader.ReadBytes((int)fileStream.Length);
+            }
+        }
