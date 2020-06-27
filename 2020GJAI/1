@@ -1,13 +1,24 @@
+ string testImageFile = @"D:\Teach\AI\FacePersonGroup\IMGS\Test\USAT1.JPG";
 
- TrainingStatus trainingStatus = null;
-            while (true)
+            using (Stream s = File.OpenRead(testImageFile))
             {
-                trainingStatus = await faceClient.PersonGroup.GetTrainingStatusAsync(personGroupId);
+                var faces = await faceClient.Face.DetectWithStreamAsync(s);
+                var faceIds = faces.Select(face => face.FaceId.Value).ToArray();
 
-                if (trainingStatus.Status != TrainingStatusType.Running)
+                var results = await faceClient.Face.IdentifyAsync(faceIds, personGroupId);
+                foreach (var identifyResult in results)
                 {
-                    break;
+                    Console.WriteLine("Result of face: {0}", identifyResult.FaceId);
+                    if (identifyResult.Candidates.Count == 0)
+                    {
+                        Console.WriteLine("No one identified");
+                    }
+                    else
+                    {
+                        // Get top 1 among all candidates returned
+                        var candidateId = identifyResult.Candidates[0].PersonId;
+                        var person = await faceClient.PersonGroupPerson.GetAsync(personGroupId, candidateId);
+                        Console.WriteLine("Identified as {0}", person.Name);
+                    }
                 }
-
-                await Task.Delay(1000);
             }
