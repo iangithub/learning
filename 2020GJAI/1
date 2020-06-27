@@ -1,23 +1,3 @@
- <Settings>
-    <Setting Name="FaceAPIKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="SettingsPanelVisibility" Type="System.Windows.Visibility" Scope="User">
-      <Value Profile="(Default)">Visible</Value>
-    </Setting>
-    <Setting Name="AnalysisInterval" Type="System.TimeSpan" Scope="User">
-      <Value Profile="(Default)">00:00:03</Value>
-    </Setting>
-    <Setting Name="FaceAPICallCount" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="AutoStopEnabled" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="AutoStopTime" Type="System.TimeSpan" Scope="Application">
-      <Value Profile="(Default)">00:05:00</Value>
-    </Setting>
-    <Setting Name="FaceAPIHost" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://westus.api.cognitive.microsoft.com</Value>
-    </Setting>
-  </Settings>
+ xmlns:props="clr-namespace:WpfApp2.Properties" 
+ 
+ <props:Settings x:Key="Settings" />
