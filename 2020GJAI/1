@@ -1,10 +1,34 @@
-  private void SettingsButton_Click(object sender, RoutedEventArgs e)
+  private FaceAPI.Models.DetectedFace CreateFace(VisionAPI.Models.FaceRectangle rect)
         {
-            SettingsPanel.Visibility = 1 - SettingsPanel.Visibility;
+            return new FaceAPI.Models.DetectedFace
+            {
+                FaceRectangle = new FaceAPI.Models.FaceRectangle
+                {
+                    Left = rect.Left,
+                    Top = rect.Top,
+                    Width = rect.Width,
+                    Height = rect.Height
+                }
+            };
         }
 
-        private void SaveSettingsButton_Click(object sender, RoutedEventArgs e)
+        private void MatchAndReplaceFaceRectangles(FaceAPI.Models.DetectedFace[] faces, OpenCvSharp.Rect[] clientRects)
         {
-            SettingsPanel.Visibility = Visibility.Hidden;
-            Properties.Settings.Default.Save();
+            // Sort the faces left-to-right. 
+            var sortedResultFaces = faces
+                .OrderBy(f => f.FaceRectangle.Left + 0.5 * f.FaceRectangle.Width)
+                .ToArray();
+
+            // Sort the clientRects left-to-right.
+            var sortedClientRects = clientRects
+                .OrderBy(r => r.Left + 0.5 * r.Width)
+                .ToArray();
+
+            for (int i = 0; i < Math.Min(faces.Length, clientRects.Length); i++)
+            {
+                // convert from OpenCvSharp rectangles
+                OpenCvSharp.Rect r = sortedClientRects[i];
+                sortedResultFaces[i].FaceRectangle = new FaceAPI.Models.FaceRectangle { Left = r.Left, Top = r.Top, Width = r.Width, Height = r.Height };
+            }
         }
+
