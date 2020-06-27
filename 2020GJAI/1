@@ -1,21 +1,14 @@
- private BitmapSource VisualizeResult(VideoFrame frame)
+ /// <summary> CameraList in the UI </summary>
+        private void CameraList_Loaded(object sender, RoutedEventArgs e)
         {
-            // Draw any results on top of the image. 
-            BitmapSource visImage = frame.Image.ToBitmapSource();
+            int numCameras = _grabber.GetNumCameras();
 
-            var result = _latestResultsToDisplay;
-
-            if (result != null)
+            if (numCameras == 0)
             {
-                // See if we have local face detections for this image.
-                var clientFaces = (OpenCvSharp.Rect[])frame.UserData;
-                if (clientFaces != null && result.Faces != null)
-                {
-                    MatchAndReplaceFaceRectangles(result.Faces, clientFaces);
-                }
-
-                visImage = Visualization.DrawFaces(visImage, result.Faces);
+                MessageArea.Text = "No cameras found!";
             }
 
-            return visImage;
+            var comboBox = sender as ComboBox;
+            comboBox.ItemsSource = Enumerable.Range(0, numCameras).Select(i => string.Format("Camera {0}", i + 1));
+            comboBox.SelectedIndex = 0;
         }
