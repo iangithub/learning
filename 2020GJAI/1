@@ -1,3 +1,4 @@
- xmlns:props="clr-namespace:WpfApp2.Properties" 
- 
- <props:Settings x:Key="Settings" />
+private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            WpfApp2.Properties.Settings.Default.Save();
+        }
