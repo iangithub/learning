@@ -1,91 +1,33 @@
-public class Visualization
+/// <summary> Metadata for a VideoFrame. </summary>
+    public struct VideoFrameMetadata
     {
-        private static SolidColorBrush s_lineBrush = new SolidColorBrush(new System.Windows.Media.Color { R = 255, G = 185, B = 0, A = 255 });
-        private static Typeface s_typeface = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+        public DateTime Timestamp;
+        public int Index;
+    }
 
-        private static BitmapSource DrawOverlay(BitmapSource baseImage, Action<DrawingContext, double> drawAction)
+    /// <summary> A video frame produced by the <see cref="FrameGrabber{AnalysisResultType}"/>.
+    ///     This class encapsulates the image, any metadata, and also allows the user to attach
+    ///     some arbitrary data to each frame as it flows through the pipeline. </summary>
+    public class VideoFrame
+    {
+        /// <summary> Constructor. </summary>
+        /// <param name="image">    The image captured by the camera. </param>
+        /// <param name="metadata"> The metadata. </param>
+        public VideoFrame(Mat image, VideoFrameMetadata metadata)
         {
-            double annotationScale = baseImage.PixelHeight / 320;
-
-            DrawingVisual visual = new DrawingVisual();
-            DrawingContext drawingContext = visual.RenderOpen();
-
-            drawingContext.DrawImage(baseImage, new Rect(0, 0, baseImage.Width, baseImage.Height));
-
-            drawAction(drawingContext, annotationScale);
-
-            drawingContext.Close();
-
-            RenderTargetBitmap outputBitmap = new RenderTargetBitmap(
-                baseImage.PixelWidth, baseImage.PixelHeight,
-                baseImage.DpiX, baseImage.DpiY, PixelFormats.Pbgra32);
-
-            outputBitmap.Render(visual);
-
-            return outputBitmap;
+            Image = image;
+            Metadata = metadata;
         }
 
-        public static BitmapSource DrawFaces(BitmapSource baseImage, FaceAPI.Models.DetectedFace[] faces)
-        {
-            if (faces == null)
-            {
-                return baseImage;
-            }
+        /// <summary> Gets the image for the frame. </summary>
+        /// <value> The image. </value>
+        public Mat Image { get; }
 
-            Action<DrawingContext, double> drawAction = (drawingContext, annotationScale) =>
-            {
-                for (int i = 0; i < faces.Length; i++)
-                {
-                    var face = faces[i];
-                    if (face.FaceRectangle == null) { continue; }
+        /// <summary> Gets the frame's metadata. </summary>
+        /// <value> The metadata. </value>
+        public VideoFrameMetadata Metadata { get; }
 
-                    Rect faceRect = new Rect(
-                        face.FaceRectangle.Left, face.FaceRectangle.Top,
-                        face.FaceRectangle.Width, face.FaceRectangle.Height);
-
-                    var summary = new StringBuilder();
-
-                    if (face.FaceAttributes != null)
-                    {
-                        summary.Append(Aggregation.SummarizeFaceAttributes(face.FaceAttributes));
-
-                        if (face.FaceAttributes.Emotion != null)
-                        {
-                            summary.Append(Aggregation.SummarizeEmotion(face.FaceAttributes.Emotion));
-                        }
-                    }
-
-                    faceRect.Inflate(6 * annotationScale, 6 * annotationScale);
-
-                    double lineThickness = 4 * annotationScale;
-
-                    drawingContext.DrawRectangle(
-                        Brushes.Transparent,
-                        new Pen(s_lineBrush, lineThickness),
-                        faceRect);
-
-                    if (summary.Length > 0)
-                    {
-                        FormattedText ft = new FormattedText(summary.ToString(),
-                            CultureInfo.CurrentCulture, FlowDirection.LeftToRight, s_typeface,
-                            16 * annotationScale, Brushes.Black);
-
-                        var pad = 3 * annotationScale;
-
-                        var ypad = pad;
-                        var xpad = pad + 4 * annotationScale;
-                        var origin = new System.Windows.Point(
-                            faceRect.Left + xpad - lineThickness / 2,
-                            faceRect.Top - ft.Height - ypad + lineThickness / 2);
-                        var rect = ft.BuildHighlightGeometry(origin).GetRenderBounds(null);
-                        rect.Inflate(xpad, ypad);
-
-                        drawingContext.DrawRectangle(s_lineBrush, null, rect);
-                        drawingContext.DrawText(ft, origin);
-                    }
-                }
-            };
-
-            return DrawOverlay(baseImage, drawAction);
-        }
+        /// <summary> Gets or sets the frame's "user data". </summary>
+        /// <value> Any additional data that the user would like to attach to a video frame. </value>
+        public object UserData { get; set; } = null;
     }
