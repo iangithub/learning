@@ -1,13 +1,15 @@
-private void CameraList_Loaded(object sender, RoutedEventArgs e)
+ private async Task<LiveCameraResult> TaggingAnalysisFunction(VideoFrame frame)
         {
-            int numCameras = _grabber.GetNumCameras();
+            // Encode image. 
+            var jpg = frame.Image.ToMemoryStream(".jpg", s_jpegParams);
+            //var jpg = frame.Image.ToMemoryStream();
 
-            if (numCameras == 0)
+            // Submit image to API. 
+            var result = _endpoint.ClassifyImage(ProjectId, PublishedModelName, jpg);
+
+            // Output. 
+            return new LiveCameraResult
             {
-                MessageArea.Text = "No cameras found!";
-            }
-
-            var comboBox = sender as ComboBox;
-            comboBox.ItemsSource = Enumerable.Range(0, numCameras).Select(i => string.Format("Camera {0}", i + 1));
-            comboBox.SelectedIndex = 0;
+                CustomVisions = result.Predictions
+            };
         }
