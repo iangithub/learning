@@ -1,11 +1,81 @@
-   /// <summary>
-        /// 建立預設參數的結構
+
+        /// <summary>
+        /// 載入資料 / 擷取並轉換資料 / TensorFlow 模型評分/ 調整(重新定型) 模型 / 顯示模型結果。
+        /// 評估模型 / 傳回模型
         /// </summary>
-        private struct InceptionSettings
+        /// <param name="mlContext"></param>
+        /// <param name="dataLocation"></param>
+        /// <param name="imagesFolder"></param>
+        /// <param name="inputModelLocation"></param>
+        /// <param name="outputModelLocation"></param>
+        /// <returns></returns>
+        public static ITransformer ReuseAndTuneInceptionModel(MLContext mlContext, string dataLocation
+            , string imagesFolder, string inputModelLocation, string outputModelLocation)
         {
-            public const int ImageHeight = 224;
-            public const int ImageWidth = 224;
-            public const float Mean = 117; //平均值
-            public const float Scale = 1;
-            public const bool ChannelsLast = true;
+            // (1) 載入資料
+            var data = mlContext.Data.LoadFromTextFile<ImageData>(path: dataLocation, hasHeader: false);
+
+            // (2) 擷取並轉換資料
+            /*
+                Transforms.Conversion.MapValueToKey:擷取 Features 並傳輸資料，將影像調整為數值向量格式
+                LoadImages:處理影像，以點陣圖類型的形式載入記憶體
+                ResizeImages:調整影像大小，因為預先定型的模組具有定義的輸入影像寬度和高度
+                ExtractPixels:從輸入影像擷取像素，並轉換成數值向量。
+                LoadTensorFlowModel：載入 TensorFlow 模型
+                ScoreTensorFlowModel:將 TensorFlowTransform 附加至 estimator，
+                                    擷取指定的輸出 (Inception model 的影像特徵 softmax2_pre_activation)
+                                    ，並使用預先定型的 TensorFlow 模型為資料集評分
+             */
+            var estimator = mlContext
+                            .Transforms.Conversion.MapValueToKey(outputColumnName: LabelTokey
+                                                                , inputColumnName: "Label")
+                            .Append(mlContext.Transforms.LoadImages(outputColumnName: "input"
+                                                                , imageFolder: _trainImagesFolder
+                                                                , inputColumnName: nameof(ImageData.ImagePath)))
+                            .Append(mlContext.Transforms.ResizeImages(outputColumnName: "input"
+                                                                , imageWidth: InceptionSettings.ImageWidth
+                                                                , imageHeight: InceptionSettings.ImageHeight
+                                                                , inputColumnName: "input"))
+                            .Append(mlContext.Transforms.ExtractPixels(outputColumnName: "input"
+                                                                , interleavePixelColors: InceptionSettings.ChannelsLast
+                                                                , offsetImage: InceptionSettings.Mean))
+                            .Append(mlContext.Model.LoadTensorFlowModel(inputModelLocation)
+                            .ScoreTensorFlowModel(outputColumnNames: new[] { "softmax2_pre_activation" }
+                                                , inputColumnNames: new[] { "input" }
+                                                , addBatchDimensionInput: true))
+                            .Append(mlContext.MulticlassClassification.Trainers.LbfgsMaximumEntropy(
+                                    labelColumnName: LabelTokey
+                                    , featureColumnName: "softmax2_pre_activation")
+                            )
+                            .Append(mlContext.Transforms.Conversion.MapKeyToValue(PredictedLabelValue, "PredictedLabel"))
+                            .AppendCacheCheckpoint(mlContext);
+
+            // (3) Training classification model　轉換資料集及套用定型，來定型模型
+            Console.WriteLine("=============== Training classification model ===============");
+            ITransformer model = estimator.Fit(data);
+
+            // (4)　對測試資料集之多個提供的輸入資料列進行預測
+            var predictions = model.Transform(data);
+
+            // (5)　 轉換為強型別的 IEnumerables
+            var imageData = mlContext.Data.CreateEnumerable<ImageData>(data, false, true);
+            var imagePredictionData = mlContext.Data.CreateEnumerable<ImagePrediction>(predictions, false, true);
+
+            //(6) 顯示資料和預測
+            DisplayResults(imagePredictionData);
+
+
+            // (7) 顯示模型評估結果
+            Console.WriteLine("=============== Classification metrics ===============");
+
+            var multiclassContext = mlContext.MulticlassClassification;
+            var metrics = multiclassContext.Evaluate(predictions, labelColumnName: LabelTokey, predictedLabelColumnName: "PredictedLabel");
+
+
+            Console.WriteLine($"LogLoss is: {metrics.LogLoss}");
+            Console.WriteLine($"PerClassLogLoss is: {String.Join(" , ", metrics.PerClassLogLoss.Select(c => c.ToString()))}");
+
+            //(8) Save Model
+            mlContext.Model.Save(model, data.Schema, _outputImageClassifierZip);
+            return model;
         }
