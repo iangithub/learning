@@ -1,8 +1,11 @@
-public class NewFrameEventArgs : EventArgs
+public class NewResultEventArgs : EventArgs
         {
-            public NewFrameEventArgs(VideoFrame frame)
+            public NewResultEventArgs(VideoFrame frame)
             {
                 Frame = frame;
             }
             public VideoFrame Frame { get; }
+            public AnalysisResultType Analysis { get; set; } = default(AnalysisResultType);
+            public bool TimedOut { get; set; } = false;
+            public Exception Exception { get; set; } = null;
         }
