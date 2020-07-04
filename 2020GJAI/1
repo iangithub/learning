@@ -1,25 +1,10 @@
-public async Task StopProcessingAsync()
+   public void TriggerAnalysisOnPredicate(Func<VideoFrame, bool, bool> predicate)
         {
-            OnProcessingStopping();
-
-            _stopping = true;
-            _frameGrabTimer.Set();
-            if (_producerTask != null)
+            _resetTrigger = true;
+            _analysisPredicate = (VideoFrame frame) =>
             {
-                await _producerTask;
-                _producerTask = null;
-            }
-            if (_consumerTask != null)
-            {
-                await _consumerTask;
-                _consumerTask = null;
-            }
-            if (_analysisTaskQueue != null)
-            {
-                _analysisTaskQueue.Dispose();
-                _analysisTaskQueue = null;
-            }
-            _stopping = false;
-
-            OnProcessingStopped();
+                bool shouldCall = predicate(frame, _resetTrigger);
+                _resetTrigger = false;
+                return shouldCall;
+            };
         }
