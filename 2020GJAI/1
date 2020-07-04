@@ -1,4 +1,14 @@
-private async void StopButton_Click(object sender, RoutedEventArgs e)
+private BitmapSource VisualizeResult(VideoFrame frame)
         {
-            await _grabber.StopProcessingAsync();
+            // Draw any results on top of the image. 
+            BitmapSource visImage = frame.Image.ToBitmapSource();
+
+            var result = _latestResultsToDisplay;
+
+            if (result != null)
+            {
+                visImage = Visualization.DrawTags(visImage, result.CustomVisions);
+            }
+
+            return visImage;
         }
