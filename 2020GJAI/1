@@ -1,20 +1,10 @@
- protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    _frameGrabTimer.Dispose();
-                    _timer?.Dispose();
-                    _timerMutex.Dispose();
-                    _analysisTaskQueue?.Dispose();
-                }
+ #region Events
 
-                disposedValue = true;
-            }
-        }
+        public event EventHandler ProcessingStarting;
+        public event EventHandler ProcessingStarted;
+        public event EventHandler ProcessingStopping;
+        public event EventHandler ProcessingStopped;
+        public event EventHandler<NewFrameEventArgs> NewFrameProvided;
+        public event EventHandler<NewResultEventArgs> NewResultAvailable;
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        #endregion Events
