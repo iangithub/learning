@@ -1,169 +1,21 @@
-public partial class MainWindow : System.Windows.Window, IDisposable
-    {
-        private VisionAPI.ComputerVisionClient _visionClient = null;
-        private CustomVisionPredictionClient _endpoint = null;
-        private string ApiKey = "dcf87780f1734ad18fdad3a10af09b62";
-        private string Endpoint = "https://mystore-prediction.cognitiveservices.azure.com/";
-        private Guid ProjectId = Guid.Parse("4c729ac0-3042-4d6c-a8b8-306979ee49f0");
-        private string PublishedModelName = "Iteration2";
-        private readonly FrameGrabber<LiveCameraResult> _grabber;
-        private static readonly ImageEncodingParam[] s_jpegParams = {
-            new ImageEncodingParam(ImwriteFlags.JpegQuality, 60)
-        };
-        private readonly CascadeClassifier _localFaceDetector = new CascadeClassifier();
-        private bool _fuseClientRemoteResults;
-        private LiveCameraResult _latestResultsToDisplay = null;
+#=================================== import matplotlib.pyplot as plt ============================================
+import matplotlib.pyplot as plt
+import numpy as np
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            
-            // Create grabber. 
-            _grabber = new FrameGrabber<LiveCameraResult>();
+# show image functions
 
-            // Set up a listener for when the client receives a new frame.
-            _grabber.NewFrameProvided += (s, e) =>
-            {
-                this.Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    // Display the image in the left pane.
-                    LeftImage.Source = e.Frame.Image.ToBitmapSource();
+def imshow(img):
+    img = img / 2 + 0.5     # unnormalize
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.show()
 
-                    if (_fuseClientRemoteResults)
-                    {
-                        RightImage.Source = VisualizeResult(e.Frame);
-                    }
-                }));
-            };
+# get some training images
+dataiter = iter(trainloader)
+images, labels = dataiter.next()
 
-            // Set up a listener for when the client receives a new result from an API call. 
-            _grabber.NewResultAvailable += (s, e) =>
-            {
-                this.Dispatcher.BeginInvoke((Action)(() =>
-                {
-                    if (e.TimedOut)
-                    {
-                        MessageArea.Text = "API call timed out.";
-                    }
-                    else if (e.Exception != null)
-                    {
-                        string message = e.Exception.Message;
-                        MessageArea.Text = string.Format("API call failed . Exception: {0}", message);
-                    }
-                    else
-                    {
-                        _latestResultsToDisplay = e.Analysis;
+# show images
+imshow(torchvision.utils.make_grid(images))
 
-                        // Display the image and visualization in the right pane. 
-                        if (!_fuseClientRemoteResults)
-                        {
-                            RightImage.Source = VisualizeResult(e.Frame);
-                        }
-                    }
-                }));
-            };
-        }
-
-
-        /// <summary> Populate CameraList in the UI, once it is loaded. </summary>
-        /// <param name="sender"> Source of the event. </param>
-        /// <param name="e">      Routed event information. </param>
-        private void CameraList_Loaded(object sender, RoutedEventArgs e)
-        {
-            int numCameras = _grabber.GetNumCameras();
-
-            if (numCameras == 0)
-            {
-                MessageArea.Text = "No cameras found!";
-            }
-
-            var comboBox = sender as ComboBox;
-            comboBox.ItemsSource = Enumerable.Range(0, numCameras).Select(i => string.Format("Camera {0}", i + 1));
-            comboBox.SelectedIndex = 0;
-        }
-        /// <summary> Function which submits a frame to the Computer Vision API for tagging. </summary>
-        private async Task<LiveCameraResult> TaggingAnalysisFunction(VideoFrame frame)
-        {
-            // Encode image. 
-            var jpg = frame.Image.ToMemoryStream(".jpg", s_jpegParams);
-            //var jpg = frame.Image.ToMemoryStream();
-
-            // Submit image to API. 
-            var result = _endpoint.ClassifyImage(ProjectId, PublishedModelName, jpg);
-
-            // Output. 
-            return new LiveCameraResult
-            {
-              CustomVisions= result.Predictions
-            };
-        }
-
-        private async void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!CameraList.HasItems)
-            {
-                MessageArea.Text = "No cameras found; cannot start processing";
-                return;
-            }
-
-            _grabber.AnalysisFunction = TaggingAnalysisFunction;
-
-            // Create API clients.
-            _endpoint = new CustomVisionPredictionClient()
-            {
-                ApiKey = ApiKey,
-                Endpoint = Endpoint
-            };
-
-            // How often to analyze. 
-            _grabber.TriggerAnalysisOnInterval(TimeSpan.FromMilliseconds(3000));
-
-            // Reset message. 
-            MessageArea.Text = "";
-
-            // Record start time, for auto-stop
-            // _startTime = DateTime.Now;
-
-            await _grabber.StartProcessingCameraAsync(CameraList.SelectedIndex);
-        }
-
-        private async void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            await _grabber.StopProcessingAsync();
-        }
-
-        private BitmapSource VisualizeResult(VideoFrame frame)
-        {
-            // Draw any results on top of the image. 
-            BitmapSource visImage = frame.Image.ToBitmapSource();
-
-            var result = _latestResultsToDisplay;
-
-            if (result != null)
-            {
-                visImage = Visualization.DrawTags(visImage, result.CustomVisions);
-            }
-
-            return visImage;
-        }
-
-        private bool disposedValue = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    _grabber?.Dispose();
-                    _visionClient?.Dispose();
-                    _localFaceDetector?.Dispose();
-                }
-
-                disposedValue = true;
-            }
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-    }
+# print labels
+print(' '.join('%5s' % classes[labels[i]] for i in range(4)))
