@@ -1,24 +1,18 @@
+ public class ImageData
+    {
+        [LoadColumn(0)]
+        public string ImagePath;
 
-#============================= Step6 測試模型 with 測試資料集 =======================================
-correct = 0
-total = 0
-with torch.no_grad():
-    for data in testloader:
-        images, labels = data
-        outputs = net(images)
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
+        [LoadColumn(1)]
+        public string Label;
+    }
 
-print('Accuracy of the network on the 10000 test images: %d %%' % (
-    100 * correct / total))
+    public class ImagePrediction : ImageData
+    {
+        public float[] Score;
 
-for i in range(10):
-    print('Accuracy of %5s : %2d %%' % (
-        classes[i], 100 * class_correct[i] / class_total[i]))
-
-
-#============================= Save Model =======================================
-torch.save(net, 'model.pkl');
-#Load Model 
-#model = torch.load('model.pkl')
+        /// <summary>
+        /// 已預測影像分類標籤的值
+        /// </summary>
+        public string PredictedLabelValue;
+    }
