@@ -1,17 +1,11 @@
- //(0) ===== Global Variables =====
-        //資源路徑
-        static readonly string _assetsPath = Path.Combine(Environment.CurrentDirectory, "Datas");
-        //定型影像資料標記 tsv 檔案的路徑
-        static readonly string _trainTagsTsv = Path.Combine(_assetsPath, "inputs-train"
-            , "data", "tags.tsv");
-        //用來將模型定型之影像的路徑
-        static readonly string _trainImagesFolder = Path.Combine(_assetsPath, "inputs-train", "data");
-        //重複使用以重新對模型進行定型之預先定型 Inception model 的路徑
-        static readonly string _inceptionPb = Path.Combine(_assetsPath, "inputs-train"
-            , "inception", "tensorflow_inception_graph.pb");
-        //用來儲存定型模型的路徑
-        static readonly string _outputImageClassifierZip = Path.Combine(_assetsPath, "outputs"
-            , "imageClassifier.zip");
-        private static string LabelTokey = nameof(LabelTokey);
-        //已預測標籤值的資料行
-        private static string PredictedLabelValue = nameof(PredictedLabelValue);
+   /// <summary>
+        /// 建立預設參數的結構
+        /// </summary>
+        private struct InceptionSettings
+        {
+            public const int ImageHeight = 224;
+            public const int ImageWidth = 224;
+            public const float Mean = 117; //平均值
+            public const float Scale = 1;
+            public const bool ChannelsLast = true;
+        }
