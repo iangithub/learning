@@ -1,10 +1,9 @@
-protected void OnProcessingStopping()
+ protected void OnNewFrameProvided(VideoFrame frame)
         {
-            ProcessingStopping?.Invoke(this, null);
+            NewFrameProvided?.Invoke(this, new NewFrameEventArgs(frame));
         }
 
-        /// <summary> Raises the processing stopped event. </summary>
-        protected void OnProcessingStopped()
+        protected void OnNewResultAvailable(NewResultEventArgs args)
         {
-            ProcessingStopped?.Invoke(this, null);
+            NewResultAvailable?.Invoke(this, args);
         }
