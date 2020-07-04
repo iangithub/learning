@@ -1,38 +1,20 @@
- protected async Task<NewResultEventArgs> DoAnalyzeFrame(VideoFrame frame)
+ protected virtual void Dispose(bool disposing)
         {
-            CancellationTokenSource source = new CancellationTokenSource();
-
-            // Make a local reference to the function, just in case someone sets
-            // AnalysisFunction = null before we can call it.
-            var fcn = AnalysisFunction;
-            if (fcn != null)
+            if (!disposedValue)
             {
-                NewResultEventArgs output = new NewResultEventArgs(frame);
-                var task = fcn(frame);
-                LogMessage("DoAnalysis: started task {0}", task.Id);
-                try
+                if (disposing)
                 {
-                    if (task == await Task.WhenAny(task, Task.Delay(AnalysisTimeout, source.Token)))
-                    {
-                        output.Analysis = await task;
-                        source.Cancel();
-                    }
-                    else
-                    {
-                        output.TimedOut = true;
-                    }
-                }
-                catch (Exception ae)
-                {
-                    output.Exception = ae;
+                    _frameGrabTimer.Dispose();
+                    _timer?.Dispose();
+                    _timerMutex.Dispose();
+                    _analysisTaskQueue?.Dispose();
                 }
 
-                LogMessage("DoAnalysis: returned from task {0}", task.Id);
+                disposedValue = true;
+            }
+        }
 
-                return output;
-            }
-            else
-            {
-                return null;
-            }
+        public void Dispose()
+        {
+            Dispose(true);
         }
