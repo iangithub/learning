@@ -1,3 +1,129 @@
+import torch
+import torchvision
+import torchvision.transforms as transforms
+
+#PIL.Image/numpy.ndarray轉為Tensor，用在訓練模型階段的數據讀取
+#Tensor轉 PIL.Image/numpy.ndarray則用在驗證模型階段的數據輸出
+#RandomHorizontalFlip & RandomGrayscale 進行數據加強
+#通常在比較小型數據集上，為了出現過度擬合，進行隨機翻轉圖片，隨機調整圖片的亮度
+
+#transform = transforms.Compose(
+#    [transforms.RandomHorizontalFlip(),
+#     transforms.RandomGrayscale(),
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+transform = transforms.Compose(
+    [transforms.ToTensor(),
+     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+#測試集不用做數據加強
+testform = transforms.Compose(
+    [transforms.ToTensor(),
+     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+#CIFAR-10 dataset consists of 60000 32x32 colour images in 10 classes
+#There are 50000 training images and 10000 test images
+#https://www.cs.toronto.edu/~kriz/cifar.html
+
+#訓練資料集
+trainset = torchvision.datasets.CIFAR10(root='./imgdata/CIFAR10'
+                                        , train=True,download=True, transform=transform)
+
+
+#DataLoader : PyTorch 讀取數據的介面
+#batch_size 每個批次的數據數量個數
+#shuffle 每個epoch都打亂數據 (迭代完所有的訓練數據(1次)，稱為一個epoch)
+#num_workers 使用多少線程來加載數據
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,shuffle=True, num_workers=4)
+
+
+#測試資料集
+testset = torchvision.datasets.CIFAR10(root='./imgdata/CIFAR10', train=False,download=True
+                                       , transform=testform)
+
+#DataLoader : PyTorch 讀取數據的介面
+#shuffle=Fals 測試集不需要打亂
+testloader = torch.utils.data.DataLoader(testset, batch_size=4,shuffle=False, num_workers=4)
+
+classes = ('plane', 'car', 'bird', 'cat','deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+
+#Show img info
+print(trainset[0])
+img, label = trainset[0]
+print (img)
+print(img.size())
+print (img.mode)
+print ('Label index : ',label)
+print('Label tag : ',classes[label])
+
+#=================================== import matplotlib.pyplot as plt ============================================
+import matplotlib.pyplot as plt
+import numpy as np
+
+# show image functions
+def imshow(img):
+    img = img / 2 + 0.5     # unnormalize
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.show()
+
+# get some training images
+dataiter = iter(trainloader)
+images, labels = dataiter.next()
+
+# show images
+imshow(torchvision.utils.make_grid(images))
+
+# print labels
+print(' '.join('%5s' % classes[labels[i]] for i in range(4)))
+
+#=================================== Step 2 定義卷積神經網絡 CNN ============================================
+import torch.nn as nn
+import torch.nn.functional as F
+
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        
+        #Conv2d 二維卷積 一般用於二維圖像
+        self.conv1 = nn.Conv2d(3, 6, 5) #卷積層：input 3通道(RGB)的圖片，output feature maps，卷積核5x5
+        self.pool1 = nn.MaxPool2d(2, 2) #池化層 卷積核大小2X2,步長為2 (輸入30X30，輸出15X15)
+        
+        self.conv2 = nn.Conv2d(6, 16, 5) #卷積層：input 6張特徵圖(上一層out數)，output feature maps，卷積核5x5
+       
+       
+        
+        self.fc1 = torch.nn.Linear(16*5*5,120) #上一層的output
+        self.fc2 = torch.nn.Linear(120,84)
+        self.fc3 = torch.nn.Linear(84,10)
+
+    def forward(self, x):
+        x = self.pool1(F.relu(self.conv1(x)))
+        x = self.pool1(F.relu(self.conv2(x)))
+        #print(x.shape)
+        x = x.view(-1,16*5*5) # 攤平 print(x.shape) how to set?
+        #print(x.shape)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        #x = F.softmax(self.fc3(x))
+        x = self.fc3(x)
+        return x
+    
+#=================================== 定義卷積神經網絡 CNN end ============================================
+
+net = Net()
+
+#=================================== Step3 建立損失函式 ==============================================
+import torch.optim as optim
+
+criterion = nn.CrossEntropyLoss()
+
+#優化器的選擇在深度學習訓練中，關係這訓練能否快速收斂並取得較高的準確率和召回率。
+optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+
+
 #=================================== Step 4 訓練CNN ===================================================
 for epoch in range(6):  # loop over the dataset multiple times
 
