@@ -1,10 +1,31 @@
-   public void TriggerAnalysisOnPredicate(Func<VideoFrame, bool, bool> predicate)
+ public void TriggerAnalysisOnInterval(TimeSpan interval)
         {
             _resetTrigger = true;
+
+            // Keep track of the next timestamp to trigger.
+            DateTime nextCall = DateTime.MinValue;
             _analysisPredicate = (VideoFrame frame) =>
             {
-                bool shouldCall = predicate(frame, _resetTrigger);
-                _resetTrigger = false;
-                return shouldCall;
+                bool shouldCall = false;
+
+                // If this is the first frame, then trigger and initialize the timer.
+                if (_resetTrigger)
+                {
+                    _resetTrigger = false;
+                    nextCall = frame.Metadata.Timestamp;
+                    shouldCall = true;
+                }
+                else
+                {
+                    shouldCall = frame.Metadata.Timestamp > nextCall;
+                }
+
+                // Return.
+                if (shouldCall)
+                {
+                    nextCall += interval;
+                    return true;
+                }
+                return false;
             };
         }
