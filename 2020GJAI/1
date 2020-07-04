@@ -1,31 +1,20 @@
- public void TriggerAnalysisOnInterval(TimeSpan interval)
+public int GetNumCameras()
         {
-            _resetTrigger = true;
-
-            // Keep track of the next timestamp to trigger.
-            DateTime nextCall = DateTime.MinValue;
-            _analysisPredicate = (VideoFrame frame) =>
+            // Count cameras manually
+            if (_numCameras == -1)
             {
-                bool shouldCall = false;
+                _numCameras = 0;
+                while (_numCameras < 100)
+                {
+                    using (var vc = VideoCapture.FromCamera(_numCameras))
+                    {
+                        if (vc.IsOpened())
+                            ++_numCameras;
+                        else
+                            break;
+                    }
+                }
+            }
 
-                // If this is the first frame, then trigger and initialize the timer.
-                if (_resetTrigger)
-                {
-                    _resetTrigger = false;
-                    nextCall = frame.Metadata.Timestamp;
-                    shouldCall = true;
-                }
-                else
-                {
-                    shouldCall = frame.Metadata.Timestamp > nextCall;
-                }
-
-                // Return.
-                if (shouldCall)
-                {
-                    nextCall += interval;
-                    return true;
-                }
-                return false;
-            };
+            return _numCameras;
         }
