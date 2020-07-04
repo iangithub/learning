@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
-using Newtonsoft.Json.Linq;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
-using VisionAPI = Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
+private VisionAPI.ComputerVisionClient _visionClient = null;
+        private CustomVisionPredictionClient _endpoint = null;
+        private string ApiKey = "your api key ";
+        private string Endpoint = "api uri";
+        private Guid ProjectId = Guid.Parse("project id");
+        private string PublishedModelName = "Iteration2";
+        private readonly FrameGrabber<LiveCameraResult> _grabber;
+        private static readonly ImageEncodingParam[] s_jpegParams = {
+            new ImageEncodingParam(ImwriteFlags.JpegQuality, 60)
+        };
+        private readonly CascadeClassifier _localFaceDetector = new CascadeClassifier();
+        private bool _fuseClientRemoteResults;
+        private LiveCameraResult _latestResultsToDisplay = null;
