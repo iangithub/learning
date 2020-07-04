@@ -1,1 +1,3 @@
- public Func<VideoFrame, Task<AnalysisResultType>> AnalysisFunction { get; set; } = null;
+ public TimeSpan AnalysisTimeout { get; set; } = TimeSpan.FromMilliseconds(5000);
+
+        public bool IsRunning { get { return _analysisTaskQueue != null; } }
