@@ -1,9 +1,38 @@
- protected void OnNewFrameProvided(VideoFrame frame)
+ protected async Task<NewResultEventArgs> DoAnalyzeFrame(VideoFrame frame)
         {
-            NewFrameProvided?.Invoke(this, new NewFrameEventArgs(frame));
-        }
+            CancellationTokenSource source = new CancellationTokenSource();
 
-        protected void OnNewResultAvailable(NewResultEventArgs args)
-        {
-            NewResultAvailable?.Invoke(this, args);
+            // Make a local reference to the function, just in case someone sets
+            // AnalysisFunction = null before we can call it.
+            var fcn = AnalysisFunction;
+            if (fcn != null)
+            {
+                NewResultEventArgs output = new NewResultEventArgs(frame);
+                var task = fcn(frame);
+                LogMessage("DoAnalysis: started task {0}", task.Id);
+                try
+                {
+                    if (task == await Task.WhenAny(task, Task.Delay(AnalysisTimeout, source.Token)))
+                    {
+                        output.Analysis = await task;
+                        source.Cancel();
+                    }
+                    else
+                    {
+                        output.TimedOut = true;
+                    }
+                }
+                catch (Exception ae)
+                {
+                    output.Exception = ae;
+                }
+
+                LogMessage("DoAnalysis: returned from task {0}", task.Id);
+
+                return output;
+            }
+            else
+            {
+                return null;
+            }
         }
