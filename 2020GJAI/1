@@ -1,9 +1,10 @@
- protected void OnProcessingStarting()
+protected void OnProcessingStopping()
         {
-            ProcessingStarting?.Invoke(this, null);
+            ProcessingStopping?.Invoke(this, null);
         }
 
-        protected void OnProcessingStarted()
+        /// <summary> Raises the processing stopped event. </summary>
+        protected void OnProcessingStopped()
         {
-            ProcessingStarted?.Invoke(this, null);
+            ProcessingStopped?.Invoke(this, null);
         }
