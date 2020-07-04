@@ -1,29 +1,23 @@
-public static class ConcurrentLogger
+ public class VideoFrame
     {
-        private readonly static SemaphoreSlim s_printMutex = new SemaphoreSlim(1);
-        private readonly static BlockingCollection<string> s_messageQueue = new BlockingCollection<string>();
-
-        public static void WriteLine(string message)
+        /// <summary> Constructor. </summary>
+        /// <param name="image">    The image captured by the camera. </param>
+        /// <param name="metadata"> The metadata. </param>
+        public VideoFrame(Mat image, VideoFrameMetadata metadata)
         {
-            var timestamp = DateTime.Now;
-            // Push the message on the queue
-            s_messageQueue.Add(timestamp.ToString("o") + ": " + message);
-            // Start a new task that will dequeue one message and print it. The tasks will not
-            // necessarily run in order, but since each task just takes the oldest message and
-            // prints it, the messages will print in order. 
-            Task.Run(async () =>
-            {
-                // Wait to get access to the queue. 
-                await s_printMutex.WaitAsync();
-                try
-                {
-                    string msg = s_messageQueue.Take();
-                    Console.WriteLine(msg);
-                }
-                finally
-                {
-                    s_printMutex.Release();
-                }
-            });
+            Image = image;
+            Metadata = metadata;
         }
+
+        /// <summary> Gets the image for the frame. </summary>
+        /// <value> The image. </value>
+        public Mat Image { get; }
+
+        /// <summary> Gets the frame's metadata. </summary>
+        /// <value> The metadata. </value>
+        public VideoFrameMetadata Metadata { get; }
+
+        /// <summary> Gets or sets the frame's "user data". </summary>
+        /// <value> Any additional data that the user would like to attach to a video frame. </value>
+        public object UserData { get; set; } = null;
     }
