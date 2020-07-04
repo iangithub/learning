@@ -1,3 +1,12 @@
- public TimeSpan AnalysisTimeout { get; set; } = TimeSpan.FromMilliseconds(5000);
-
-        public bool IsRunning { get { return _analysisTaskQueue != null; } }
+public double FrameRate
+        {
+            get { return _fps; }
+            set
+            {
+                _fps = value;
+                if (_timer != null)
+                {
+                    _timer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1.0 / _fps));
+                }
+            }
+        }
