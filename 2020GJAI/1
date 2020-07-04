@@ -1,14 +1,19 @@
-private BitmapSource VisualizeResult(VideoFrame frame)
+private bool disposedValue = false;
+        protected virtual void Dispose(bool disposing)
         {
-            // Draw any results on top of the image. 
-            BitmapSource visImage = frame.Image.ToBitmapSource();
-
-            var result = _latestResultsToDisplay;
-
-            if (result != null)
+            if (!disposedValue)
             {
-                visImage = Visualization.DrawTags(visImage, result.CustomVisions);
-            }
+                if (disposing)
+                {
+                    _grabber?.Dispose();
+                    _visionClient?.Dispose();
+                    _localFaceDetector?.Dispose();
+                }
 
-            return visImage;
+                disposedValue = true;
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
         }
