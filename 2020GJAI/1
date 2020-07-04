@@ -1,10 +1,59 @@
-using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using VisionAPI = Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
+public class Visualization
+    {
+        private static SolidColorBrush s_lineBrush = new SolidColorBrush(new System.Windows.Media.Color { R = 255, G = 185, B = 0, A = 255 });
+        private static Typeface s_typeface = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+
+        private static BitmapSource DrawOverlay(BitmapSource baseImage, Action<DrawingContext, double> drawAction)
+        {
+            double annotationScale = baseImage.PixelHeight / 320;
+
+            DrawingVisual visual = new DrawingVisual();
+            DrawingContext drawingContext = visual.RenderOpen();
+
+            drawingContext.DrawImage(baseImage, new Rect(0, 0, baseImage.Width, baseImage.Height));
+
+            drawAction(drawingContext, annotationScale);
+
+            drawingContext.Close();
+
+            RenderTargetBitmap outputBitmap = new RenderTargetBitmap(
+                baseImage.PixelWidth, baseImage.PixelHeight,
+                baseImage.DpiX, baseImage.DpiY, PixelFormats.Pbgra32);
+
+            outputBitmap.Render(visual);
+
+            return outputBitmap;
+        }
+
+        public static BitmapSource DrawTags(BitmapSource baseImage, IList<PredictionModel> tags)
+        {
+            if (tags == null)
+            {
+                return baseImage;
+            }
+
+            Action<DrawingContext, double> drawAction = (drawingContext, annotationScale) =>
+            {
+                double y = 0;
+
+                var tagresult = tags.Where(x => Convert.ToDecimal(x.Probability) > Convert.ToDecimal(0.6))
+                .OrderByDescending(x => Convert.ToDecimal(x.Probability)).ToList();
+
+                if (tagresult.Count > 0)
+                {
+                    // Create formatted text--in a particular font at a particular size
+                    FormattedText ft = new FormattedText(tagresult[0].TagName + "(" + Convert.ToDecimal(tagresult[0].Probability) + ")",
+                        CultureInfo.CurrentCulture, FlowDirection.LeftToRight, s_typeface,
+                        42 * annotationScale, Brushes.Black);
+                    // Instead of calling DrawText (which can only draw the text in a solid colour), we
+                    // convert to geometry and use DrawGeometry, which allows us to add an outline. 
+                    var geom = ft.BuildGeometry(new System.Windows.Point(10 * annotationScale, y));
+                    drawingContext.DrawGeometry(s_lineBrush, new Pen(Brushes.Black, 2 * annotationScale), geom);
+                    // Move line down
+                    y += 42 * annotationScale;
+                }
+            };
+
+            return DrawOverlay(baseImage, drawAction);
+        }
+    }
