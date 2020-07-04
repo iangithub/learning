@@ -1,7 +1,7 @@
- private static void DisplayResults(IEnumerable<ImagePrediction> imagePredictionData)
-        {
-            foreach (ImagePrediction prediction in imagePredictionData)
-            {
-                Console.WriteLine($"Image: {Path.GetFileName(prediction.ImagePath)} predicted as: {prediction.PredictedLabelValue} with score: {prediction.Score.Max()} ");
-            }
-        }
+   // (1) Create MLContext to be shared across the model creation workflow objects
+            //     MLContext 類別是所有 ML.NET 作業的起點，且初始化 mlContext 會建立新的 ML.NET 環境
+            MLContext mlContext = new MLContext();
+
+            // (2) Reuse And Tune InceptionModel
+            var model = ReuseAndTuneInceptionModel(mlContext, _trainTagsTsv, _trainImagesFolder
+                , _inceptionPb, _outputImageClassifierZip);
