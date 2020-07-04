@@ -1,26 +1,162 @@
- public async Task StartProcessingCameraAsync(int cameraIndex = 0, double overrideFPS = 0)
+ protected void StartProcessing(TimeSpan frameGrabDelay, Func<DateTime> timestampFn)
         {
-            // Check to see if we're re-opening the same camera.
-            if (_reader != null && _reader.CaptureType == CaptureType.Camera && cameraIndex == _currCameraIdx)
+            OnProcessingStarting();
+
+            _resetTrigger = true;
+            _frameGrabTimer.Reset();
+            _analysisTaskQueue = new BlockingCollection<Task<NewResultEventArgs>>();
+
+            var timerIterations = 0;
+
+            // Create a background thread that will grab frames in a loop.
+            _producerTask = Task.Factory.StartNew(() =>
             {
-                return;
-            }
+                var frameCount = 0;
+                while (!_stopping)
+                {
+                    LogMessage("Producer: waiting for timer to trigger frame-grab");
 
-            await StopProcessingAsync().ConfigureAwait(false);
+                    // Wait to get released by the timer.
+                    _frameGrabTimer.WaitOne();
+                    LogMessage("Producer: grabbing frame...");
 
-            _reader = new VideoCapture(cameraIndex);
+                    var startTime = DateTime.Now;
 
-            _fps = overrideFPS;
+                    // Grab single frame.
+                    var timestamp = timestampFn();
+                    Mat image = new Mat();
+                    bool success = _reader.Read(image);
 
-            if (_fps == 0)
+                    LogMessage("Producer: frame-grab took {0} ms", (DateTime.Now - startTime).Milliseconds);
+
+                    if (!success)
+                    {
+                        // If we've reached the end of the video, stop here.
+                        if (_reader.CaptureType == CaptureType.File)
+                        {
+                            LogMessage("Producer: null frame from video file, stop!");
+                            // This will call StopProcessing on a new thread.
+                            var stopTask = StopProcessingAsync();
+                            // Break out of the loop to make sure we don't try grabbing more
+                            // frames.
+                            break;
+                        }
+                        else
+                        {
+                            // If failed on live camera, try again.
+                            LogMessage("Producer: null frame from live camera, continue!");
+                            continue;
+                        }
+                    }
+
+                    // Package the image for submission.
+                    VideoFrameMetadata meta;
+                    meta.Index = frameCount;
+                    meta.Timestamp = timestamp;
+                    VideoFrame vframe = new VideoFrame(image, meta);
+
+                    // Raise the new frame event
+                    LogMessage("Producer: new frame provided, should analyze? Frame num: {0}", meta.Index);
+                    OnNewFrameProvided(vframe);
+
+                    if (_analysisPredicate(vframe))
+                    {
+                        LogMessage("Producer: analyzing frame");
+
+                        // Call the analysis function on a threadpool thread
+                        var analysisTask = DoAnalyzeFrame(vframe);
+
+                        LogMessage("Producer: adding analysis task to queue {0}", analysisTask.Id);
+
+                        // Push the frame onto the queue
+                        _analysisTaskQueue.Add(analysisTask);
+                    }
+                    else
+                    {
+                        LogMessage("Producer: not analyzing frame");
+                    }
+
+                    LogMessage("Producer: iteration took {0} ms", (DateTime.Now - startTime).Milliseconds);
+
+                    ++frameCount;
+                }
+
+                LogMessage("Producer: stopping, destroy reader and timer");
+                _analysisTaskQueue.CompleteAdding();
+
+                // We reach this point by breaking out of the while loop. So we must be stopping.
+                _reader.Dispose();
+                _reader = null;
+
+                // Make sure the timer stops, then get rid of it.
+                var h = new ManualResetEvent(false);
+                _timer.Dispose(h);
+                h.WaitOne();
+                _timer = null;
+
+                LogMessage("Producer: stopped");
+            }, TaskCreationOptions.LongRunning);
+
+            _consumerTask = Task.Factory.StartNew(async () =>
             {
-                _fps = 30;
-            }
+                while (!_analysisTaskQueue.IsCompleted)
+                {
+                    LogMessage("Consumer: waiting for task to get added");
 
-            Width = _reader.FrameWidth;
-            Height = _reader.FrameHeight;
+                    // Get the next processing task.
+                    Task<NewResultEventArgs> nextTask = null;
 
-            StartProcessing(TimeSpan.FromSeconds(1 / _fps), () => DateTime.Now);
+                    // Blocks if m_analysisTaskQueue.Count == 0
+                    // IOE means that Take() was called on a completed collection.
+                    // Some other thread can call CompleteAdding after we pass the
+                    // IsCompleted check but before we call Take.
+                    // In this example, we can simply catch the exception since the
+                    // loop will break on the next iteration.
+                    // See https://msdn.microsoft.com/en-us/library/dd997371(v=vs.110).aspx
+                    try
+                    {
+                        nextTask = _analysisTaskQueue.Take();
+                    }
+                    catch (InvalidOperationException) { }
 
-            _currCameraIdx = cameraIndex;
+                    if (nextTask != null)
+                    {
+                        // Block until the result becomes available.
+                        LogMessage("Consumer: waiting for next result to arrive for task {0}", nextTask.Id);
+                        var result = await nextTask;
+
+                        // Raise the new result event.
+                        LogMessage("Consumer: got result for frame {0}. {1} tasks in queue", result.Frame.Metadata.Index, _analysisTaskQueue.Count);
+                        OnNewResultAvailable(result);
+                    }
+                }
+
+                LogMessage("Consumer: stopped");
+            }, TaskCreationOptions.LongRunning);
+
+            // Set up a timer object that will trigger the frame-grab at a regular interval.
+            _timer = new Timer(async s /* state */ =>
+            {
+                await _timerMutex.WaitAsync();
+                try
+                {
+                    // If the handle was not reset by the producer, then the frame-grab was missed.
+                    bool missed = _frameGrabTimer.WaitOne(0);
+
+                    _frameGrabTimer.Set();
+
+                    if (missed)
+                    {
+                        LogMessage("Timer: missed frame-grab {0}", timerIterations - 1);
+                    }
+                    LogMessage("Timer: grab frame num {0}", timerIterations);
+                    ++timerIterations;
+                }
+                finally
+                {
+                    _timerMutex.Release();
+                }
+            }, null, TimeSpan.Zero, frameGrabDelay);
+
+            OnProcessingStarted();
         }
