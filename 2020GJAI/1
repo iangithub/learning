@@ -1,5 +1,26 @@
- [Conditional("TRACE_GRABBER")]
-        protected void LogMessage(string format, params object[] args)
+ public async Task StartProcessingCameraAsync(int cameraIndex = 0, double overrideFPS = 0)
         {
-            ConcurrentLogger.WriteLine(String.Format(format, args));
+            // Check to see if we're re-opening the same camera.
+            if (_reader != null && _reader.CaptureType == CaptureType.Camera && cameraIndex == _currCameraIdx)
+            {
+                return;
+            }
+
+            await StopProcessingAsync().ConfigureAwait(false);
+
+            _reader = new VideoCapture(cameraIndex);
+
+            _fps = overrideFPS;
+
+            if (_fps == 0)
+            {
+                _fps = 30;
+            }
+
+            Width = _reader.FrameWidth;
+            Height = _reader.FrameHeight;
+
+            StartProcessing(TimeSpan.FromSeconds(1 / _fps), () => DateTime.Now);
+
+            _currCameraIdx = cameraIndex;
         }
