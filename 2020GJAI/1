@@ -1,1 +1,23 @@
 
+ <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="35" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Name="ButtonBar">
+            <ComboBox x:Name="CameraList" Width="100" Margin="5,5,0,5" Loaded="CameraList_Loaded" />
+            <Button Content="Start Camera" Padding="5,0" Margin="5,5,0,5" Click="StartButton_Click" />
+            <Button Content="Stop Camera" Padding="5,0" Margin="5,5,0,5" Click="StopButton_Click" />
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="397*" />
+                <ColumnDefinition Width="313*" />
+                <ColumnDefinition Width="83*"/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="LeftImage" Grid.Column="0" Margin="5,5,4.667,4.667" />
+            <Image x:Name="RightImage" Grid.Column="1" Margin="5.333,5,5.334,4.667" Panel.ZIndex="1" Grid.ColumnSpan="2" />
+        </Grid>
+        <TextBlock Name="MessageArea" Margin="5" Grid.Row="2" VerticalAlignment="Center" />
+    </Grid>
