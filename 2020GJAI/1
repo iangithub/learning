@@ -1,13 +1,13 @@
-private VisionAPI.ComputerVisionClient _visionClient = null;
-        private CustomVisionPredictionClient _endpoint = null;
-        private string ApiKey = "your api key ";
-        private string Endpoint = "api uri";
-        private Guid ProjectId = Guid.Parse("project id");
-        private string PublishedModelName = "Iteration2";
-        private readonly FrameGrabber<LiveCameraResult> _grabber;
-        private static readonly ImageEncodingParam[] s_jpegParams = {
-            new ImageEncodingParam(ImwriteFlags.JpegQuality, 60)
-        };
-        private readonly CascadeClassifier _localFaceDetector = new CascadeClassifier();
-        private bool _fuseClientRemoteResults;
-        private LiveCameraResult _latestResultsToDisplay = null;
+private void CameraList_Loaded(object sender, RoutedEventArgs e)
+        {
+            int numCameras = _grabber.GetNumCameras();
+
+            if (numCameras == 0)
+            {
+                MessageArea.Text = "No cameras found!";
+            }
+
+            var comboBox = sender as ComboBox;
+            comboBox.ItemsSource = Enumerable.Range(0, numCameras).Select(i => string.Format("Camera {0}", i + 1));
+            comboBox.SelectedIndex = 0;
+        }
