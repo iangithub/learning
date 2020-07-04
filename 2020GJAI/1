@@ -1,20 +1,9 @@
-public int GetNumCameras()
+ protected void OnProcessingStarting()
         {
-            // Count cameras manually
-            if (_numCameras == -1)
-            {
-                _numCameras = 0;
-                while (_numCameras < 100)
-                {
-                    using (var vc = VideoCapture.FromCamera(_numCameras))
-                    {
-                        if (vc.IsOpened())
-                            ++_numCameras;
-                        else
-                            break;
-                    }
-                }
-            }
+            ProcessingStarting?.Invoke(this, null);
+        }
 
-            return _numCameras;
+        protected void OnProcessingStarted()
+        {
+            ProcessingStarted?.Invoke(this, null);
         }
