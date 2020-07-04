@@ -1,17 +1,1 @@
- if (File.Exists(imgfile))
-            {
-                try
-                {
-                    MakeAnalysisRequest(imgfile);
-                    Console.WriteLine("辨識中 ....\n");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("\n" + e.Message + "\nPress Enter to exit...\n");
-                }
-            }
-            else
-            {
-                Console.WriteLine("\n 檔案不存在 \n");
-            }
-            Console.ReadLine();
+
