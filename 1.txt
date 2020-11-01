@@ -5,16 +5,15 @@ IF OBJECT_ID('dbo.SimpleOrders','U') IS NOT NULL
 GO
 CREATE TABLE dbo.SimpleOrders(
 	orderid int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	custid int NOT NULL FOREIGN KEY REFERENCES Sales.Customers(custid),
-	empid int NOT NULL FOREIGN KEY REFERENCES HR.Employees(empid),
+	custid int NOT NULL FOREIGN KEY REFERENCES Sales.Customer(CustomerID),
+	empid int NOT NULL FOREIGN KEY REFERENCES HumanResources.Employee(BusinessEntityID),
 	orderdate datetime NOT NULL
 );
 GO
 CREATE TABLE dbo.SimpleOrderDetails(
 	orderid int NOT NULL FOREIGN KEY REFERENCES dbo.SimpleOrders(orderid),
-	productid int NOT NULL FOREIGN KEY REFERENCES Production.Products(productid),
+	productid int NOT NULL FOREIGN KEY REFERENCES Production.Product(productid),
 	unitprice money NOT NULL,
 	qty smallint NOT NULL,
  CONSTRAINT PK_OrderDetails PRIMARY KEY (orderid, productid)
 );
-GO
