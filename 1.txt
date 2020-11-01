@@ -1,8 +1,20 @@
- private struct InceptionSettings
-        {
-            public const int ImageHeight = 224;
-            public const int ImageWidth = 224;
-            public const float Mean = 117; 
-            public const float Scale = 1;
-            public const bool ChannelsLast = true;
-        }
+IF OBJECT_ID('dbo.SimpleOrderDetails','U') IS NOT NULL
+	DROP TABLE dbo.SimpleOrderDetails;
+IF OBJECT_ID('dbo.SimpleOrders','U') IS NOT NULL
+	DROP TABLE dbo.SimpleOrders;
+GO
+CREATE TABLE dbo.SimpleOrders(
+	orderid int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	custid int NOT NULL FOREIGN KEY REFERENCES Sales.Customers(custid),
+	empid int NOT NULL FOREIGN KEY REFERENCES HR.Employees(empid),
+	orderdate datetime NOT NULL
+);
+GO
+CREATE TABLE dbo.SimpleOrderDetails(
+	orderid int NOT NULL FOREIGN KEY REFERENCES dbo.SimpleOrders(orderid),
+	productid int NOT NULL FOREIGN KEY REFERENCES Production.Products(productid),
+	unitprice money NOT NULL,
+	qty smallint NOT NULL,
+ CONSTRAINT PK_OrderDetails PRIMARY KEY (orderid, productid)
+);
+GO
