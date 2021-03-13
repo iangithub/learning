@@ -1,34 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        body {
+            background-color: #fff;
+        }
 
-CREATE XML SCHEMA COLLECTION dbo.ProductDetailsSchema
-AS 
-'<xsd:schema targetNamespace="urn:schemas-microsoft-com:sql:SqlRowSet3" xmlns:schema="urn:schemas-microsoft-com:sql:SqlRowSet3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sqltypes="http://schemas.microsoft.com/sqlserver/2004/sqltypes" elementFormDefault="qualified">
-  <xsd:import namespace="http://schemas.microsoft.com/sqlserver/2004/sqltypes" schemaLocation="http://schemas.microsoft.com/sqlserver/2004/sqltypes/sqltypes.xsd" />
-  <xsd:element name="Production.Product">
-    <xsd:complexType>
-      <xsd:attribute name="ProductID" type="sqltypes:int" use="required" />
-      <xsd:attribute name="Name" use="required">
-        <xsd:simpleType sqltypes:sqlTypeAlias="[AdventureWorks2008R2].[dbo].[Name]">
-          <xsd:restriction base="sqltypes:nvarchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-            <xsd:maxLength value="50" />
-          </xsd:restriction>
-        </xsd:simpleType>
-      </xsd:attribute>
-      <xsd:attribute name="Color">
-        <xsd:simpleType>
-          <xsd:restriction base="sqltypes:nvarchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-            <xsd:maxLength value="15" />
-          </xsd:restriction>
-        </xsd:simpleType>
-      </xsd:attribute>
-      <xsd:attribute name="Size">
-        <xsd:simpleType>
-          <xsd:restriction base="sqltypes:nvarchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-            <xsd:maxLength value="5" />
-          </xsd:restriction>
-        </xsd:simpleType>
-      </xsd:attribute>
-      <xsd:attribute name="ListPrice" type="sqltypes:money" use="required" />
-    </xsd:complexType>
-  </xsd:element>
-</xsd:schema>';
-GO
+        .infoinput {
+            width: 240px;
+            height: 40px;
+            margin: 10px;
+            border-radius: 5px;
+            border-color: gainsboro;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        .loginbtn {
+            width: 240px;
+            height: 40px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #1877f2;
+            border-width: 1px;
+            border-style: solid;
+            color: aliceblue
+        }
+
+        .newacbtn {
+            width: 180px;
+            height: 40px;
+            margin: 10px;
+            background-color: #36a420;
+            color: aliceblue;
+            border-radius: 5px;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        .logindiv {
+            width: 300px;
+            height: 300px;
+            border-radius: 5px;
+            background-color: aliceblue;
+            text-align: center;
+        }
+
+        .infoarea {
+            width:100%;
+            padding: 100px;
+        }
+
+        .resetpwd {
+            font-size: 12px;
+        }
+
+        .hrstyle {
+            width: 280px;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="#">
+        <table class="infoarea">
+            <tr>
+                <td>
+                    <img src="Media/facebook.png" style="width:180px;height:auto" /><br />
+                    <p>
+                        Facebook，讓你和親朋好友保持聯繫，<br />
+                        隨時分享生活中的每一刻。
+                    </p>
+                </td>
+                <td>
+                    <div class="logindiv">
+                        <input type="text" class="infoinput" placeholder="電子郵件或手機號碼" /><br />
+                        <input type="password" class="infoinput" placeholder="密碼" /><br />
+                        <input type="submit" class="loginbtn" value="登入" /><br />
+                        <a class="resetpwd" href="#">忘記密碼</a>
+                        <hr style="width:280px" />
+                        <button class="newacbtn">建立新帳號</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
