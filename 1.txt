@@ -4,87 +4,72 @@
     <meta charset="utf-8" />
     <title></title>
     <style>
-        body {
-            background-color: #fff;
+        div {
+            border: 1px solid #808080;
+            font-size: 20px;
+            margin: 15px;
+            width: 600px;
+            border-radius:10px;
+            /*display: inline-block;*/
         }
 
-        .infoinput {
-            width: 240px;
-            height: 40px;
-            margin: 10px;
-            border-radius: 5px;
-            border-color: gainsboro;
-            border-width: 1px;
-            border-style: solid;
+        .divimg {
+            border: 0px;
         }
 
-        .loginbtn {
-            width: 240px;
-            height: 40px;
-            margin: 10px;
-            border-radius: 5px;
-            background-color: #1877f2;
-            border-width: 1px;
-            border-style: solid;
-            color: aliceblue
-        }
-
-        .newacbtn {
-            width: 180px;
-            height: 40px;
-            margin: 10px;
-            background-color: #36a420;
-            color: aliceblue;
-            border-radius: 5px;
-            border-width: 1px;
-            border-style: solid;
-        }
-
-        .logindiv {
-            width: 300px;
-            height: 300px;
-            border-radius: 5px;
-            background-color: aliceblue;
+        .divtxt {
+            border: 0px;
             text-align: center;
         }
 
-        .infoarea {
-            width:100%;
-            padding: 100px;
+        .mytxt {
+            font-weight: bold
         }
 
-        .resetpwd {
-            font-size: 12px;
-        }
 
-        .hrstyle {
-            width: 280px;
+        img {
+            margin: 10px;
+            width: 550px;
+            height: 360px;
         }
     </style>
 </head>
 <body>
-    <form method="post" action="#">
-        <table class="infoarea">
-            <tr>
-                <td>
-                    <img src="Media/facebook.png" style="width:180px;height:auto" /><br />
-                    <p>
-                        Facebook，讓你和親朋好友保持聯繫，<br />
-                        隨時分享生活中的每一刻。
-                    </p>
-                </td>
-                <td>
-                    <div class="logindiv">
-                        <input type="text" class="infoinput" placeholder="電子郵件或手機號碼" /><br />
-                        <input type="password" class="infoinput" placeholder="密碼" /><br />
-                        <input type="submit" class="loginbtn" value="登入" /><br />
-                        <a class="resetpwd" href="#">忘記密碼</a>
-                        <hr style="width:280px" />
-                        <button class="newacbtn">建立新帳號</button>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </form>
+    <div>
+        <div class="divimg">
+            <img src="/imgs/c1.jpg" />
+        </div>
+        <div class="divtxt" style="font-weight:bold">
+            <label>猛虎出柙 - 邁向 Java 8 基礎認證 1z0-808 (2.0版)</label>
+        </div>
+        <div class="divtxt">
+            <label>2021/03/03~2021/03/31</label>
+        </div>
+    </div>
+
+    <div>
+        <div class="divimg">
+            <img src="/imgs/c2.jpg" />
+        </div>
+        <div class="divtxt mytxt">
+            <label>人人都懂系列-室內設計人體工學篇</label>
+        </div>
+        <div class="divtxt">
+            <label>2021/03/03~2021/03/31</label>
+        </div>
+    </div>
+
+    <div>
+        <div class="divimg">
+            <img src="/imgs/c3.jpg" />
+        </div>
+        <div class="divtxt" style="font-weight:bold">
+            <label>精密機械設計入門-AutoCAD高效環境設定</label>
+        </div>
+        <div class="divtxt">
+            <label>2021/03/03~2021/03/31</label>
+        </div>
+    </div>
+
 </body>
 </html>
