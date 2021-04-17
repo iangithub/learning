@@ -1,1 +1,1 @@
-https://opendata.epa.gov.tw/ws/Data/AQI/?$format=json&callback=?
+https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json
