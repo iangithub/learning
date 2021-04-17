@@ -1,1 +1,1 @@
-https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json
+https://docs.microsoft.com/en-us/previous-versions/aspnet/ms178472(v=vs.100)
