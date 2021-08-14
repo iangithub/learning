@@ -1,5 +1,4 @@
-ProductKey,
-EnglishProductName,
-StandardCost,
-Color,
-DimProductSubcategory 
+"EnglishProductName” 重命名為 “Product”
+“StandardCost” 重命名為 “Standard Cost” （含空格）
+“EnglishProductSubcategoryName” 重命名為 “Subcategory”
+“EnglishProductCategoryName” 重命名為 “Category”
