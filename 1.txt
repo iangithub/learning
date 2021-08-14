@@ -1,5 +1,3 @@
-—刪除TotalProductCost，StandardCost資料行
-—重新命名
-“OrderQuantity” 重命名 “Quantity”
-“UnitPrice” 重命名 “Unit Price” （含空格）
-“SalesAmount” 重命名 “Sales” 
+—修改Quantity資料類型為整數
+-以下3個資料列改為，位數固定的小數
+Unit Price、Sales、Cost 
