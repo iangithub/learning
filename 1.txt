@@ -1,2 +1,12 @@
--Reseller資料行建立Reseller階層，2个级别：Business Type,Reseller
--Reseller資料行建立階層Geography,4個級別:Country-Region,State-Province,City,Reseller
+Product | ProductKey
+Region | SalesTerritoryKey
+Reseller | ResellerKey
+Sales | EmployeeKey
+Sales | ResellerKey
+Sales | SalesOrderNumber
+Sales | SalesTerritoryKey
+Salesperson | EmployeeID
+Salesperson | EmployeeKey
+Salesperson | UPN
+SalespersonRegion | EmployeeKey
+SalespersonRegion | SalesTerritoryKey
