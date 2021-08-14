@@ -1,12 +1,3 @@
-Product | ProductKey
-Region | SalesTerritoryKey
-Reseller | ResellerKey
-Sales | EmployeeKey
-Sales | ResellerKey
-Sales | SalesOrderNumber
-Sales | SalesTerritoryKey
-Salesperson | EmployeeID
-Salesperson | EmployeeKey
-Salesperson | UPN
-SalespersonRegion | EmployeeKey
-SalespersonRegion | SalesTerritoryKey
+Product | Standard Cost
+Sales | Cost
+Sales | Sales
