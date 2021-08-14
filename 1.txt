@@ -1,5 +1,4 @@
--重命名 “Reseller”
--保留以下資料行，其餘刪除
-ResellerKey,BusinessType,ResellerName,DimGeography
--展開 “DimGeography
-City,StateProvinceName,EnglishCountryRegionName 
+將 “BusinessType” 重命名為 “Business Type” （含空格）
+將 “ResellerName” 重命名為 “Reseller”
+將 “StateProvinceName” 重命名為 “State-Province”
+將 “EnglishCountryRegionName” 重命名為 “Country-Region” 
