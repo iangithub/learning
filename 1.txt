@@ -1,4 +1,8 @@
-將 “BusinessType” 重命名為 “Business Type” （含空格）
-將 “ResellerName” 重命名為 “Reseller”
-將 “StateProvinceName” 重命名為 “State-Province”
-將 “EnglishCountryRegionName” 重命名為 “Country-Region” 
+-重命名 “Region”
+	—SalesTerritoryAlternateKey過濾０的資料
+	-保留以下資料行，其餘刪除
+	SalesTerritoryKey,SalesTerritoryRegion,SalesTerritoryCountry,SalesTerritoryGroup
+	—重命名：
+	将 “SalesTerritoryRegion” 重命名 “Region”
+	将 “SalesTerritoryCountry” 重命名 “Country”
+	将 “SalesTerritoryGroup” 重命名 “Group” 
