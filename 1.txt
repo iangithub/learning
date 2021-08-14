@@ -1,3 +1,5 @@
-—修改Quantity資料類型為整數
--以下3個資料列改為，位數固定的小數
-Unit Price、Sales、Cost 
+-删除以下資料行
+	Year,MonthNumber
+	-修改以下列資料行的資料型態
+	将 “Target” 修改為固定小數位數
+	将 “TargetMonth” 修改為日期 
