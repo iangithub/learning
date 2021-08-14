@@ -1,6 +1,5 @@
--重命名 “Sales”
--保留以下資料行，其餘刪除
-	SalesOrderNumber,OrderDate,ProductKey,ResellerKey
-	EmployeeKey,SalesTerritoryKey,OrderQuantity,UnitPrice
-	TotalProductCost,SalesAmount,DimProduct
--展開DimProduct，保留StandardCost資料行，改名為StandardCost 
+—刪除TotalProductCost，StandardCost資料行
+—重新命名
+“OrderQuantity” 重命名 “Quantity”
+“UnitPrice” 重命名 “Unit Price” （含空格）
+“SalesAmount” 重命名 “Sales” 
