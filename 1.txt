@@ -1,6 +1,5 @@
-EmployeeKey,
-EmployeeNationalIDAlternateKey,
-FirstName,
-LastName,
-Title,
-EmailAddress
+ProductKey,
+EnglishProductName,
+StandardCost,
+Color,
+DimProductSubcategory 
