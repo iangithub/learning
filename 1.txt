@@ -1,5 +1,2 @@
--删除以下資料行
-	Year,MonthNumber
-	-修改以下列資料行的資料型態
-	将 “Target” 修改為固定小數位數
-	将 “TargetMonth” 修改為日期 
+-Reseller資料行建立Reseller階層，2个级别：Business Type,Reseller
+-Reseller資料行建立階層Geography,4個級別:Country-Region,State-Province,City,Reseller
