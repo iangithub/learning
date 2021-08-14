@@ -1,4 +1,5 @@
-"EnglishProductName” 重命名為 “Product”
-“StandardCost” 重命名為 “Standard Cost” （含空格）
-“EnglishProductSubcategoryName” 重命名為 “Subcategory”
-“EnglishProductCategoryName” 重命名為 “Category”
+-重命名 “Reseller”
+-保留以下資料行，其餘刪除
+ResellerKey,BusinessType,ResellerName,DimGeography
+-展開 “DimGeography
+City,StateProvinceName,EnglishCountryRegionName 
