@@ -1,3 +1,4 @@
-Product | Standard Cost
-Sales | Cost
-Sales | Sales
+
+<connectionStrings>
+		<add name="xxx" connectionString="Data Source=localhost;Initial Catalog=DatabaseName;Persist Security Info=False;User ID=Username;Password=***;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" providerName="System.Data.SqlClient" />
+	</connectionStrings>
