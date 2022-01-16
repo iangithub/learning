@@ -1,4 +1,2 @@
 
-<connectionStrings>
-		<add name="xxx" connectionString="Data Source=localhost;Initial Catalog=DatabaseName;Persist Security Info=False;User ID=Username;Password=***;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" providerName="System.Data.SqlClient" />
-	</connectionStrings>
+5B5F8DB5-E226-464A-9C31-1D2478E5DD2A	admin	UNqTzZp+/k8GdLFQvMId5VCEVZybxUJodmIRzOGTj1k=
